@@ -1,50 +1,52 @@
 package com.project.covid.model;
 
 public class UserProfile {
-	private String id;
-	private String idname;
-	private String phone;
-	private String address;
+	int uid;
+	String access_token;
+	String refresh_token;
+	String jwt;
+	String email;
+	public int getUid() {
+		return uid;
+	}
+	public void setUid(int uid) {
+		this.uid = uid;
+	}
+	public String getAccess_token() {
+		return access_token;
+	}
+	public void setAccess_token(String access_token) {
+		this.access_token = access_token;
+	}
+	public String getRefresh_token() {
+		return refresh_token;
+	}
+	public void setRefresh_token(String refresh_token) {
+		this.refresh_token = refresh_token;
+	}
+	public String getJwt() {
+		return jwt;
+	}
+	public void setJwt(String jwt) {
+		this.jwt = jwt;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
 	
-	
-	public UserProfile(String id, String idname, String phone, String address) {
+	public UserProfile(int uid, String access_token, String refresh_token, String jwt, String email) {
 		super();
-		this.id = id;
-		this.idname = idname;
-		this.phone = phone;
-		this.address = address;
+		this.uid = uid;
+		this.access_token = access_token;
+		this.refresh_token = refresh_token;
+		this.jwt = jwt;
+		this.email = email;
 	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getIdName() {
-		return idname;
-	}
-
-	public void setName(String idname) {
-		this.idname = idname;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
+	
+	
+	
 	
 }

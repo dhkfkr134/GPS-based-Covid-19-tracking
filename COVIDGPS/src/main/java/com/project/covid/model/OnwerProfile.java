@@ -1,18 +1,13 @@
 package com.project.covid.model;
 
 public class OnwerProfile {
-	private String hostID;
+	private int hostID;
 	private String loc;
-
-	public OnwerProfile(String hostID, String loc) {
-		super();
-		this.hostID = hostID;
-		this.loc = loc;
-	}
-	public String getHostID() {
+	
+	public int getHostID() {
 		return hostID;
 	}
-	public void setHostID(String hostID) {
+	public void setHostID(int hostID) {
 		this.hostID = hostID;
 	}
 	public String getLoc() {
@@ -21,5 +16,12 @@ public class OnwerProfile {
 	public void setLoc(String loc) {
 		this.loc = loc;
 	}
+	public OnwerProfile(int hostID, String loc) {
+		super();
+		this.hostID = hostID;
+		this.loc = loc;
+	}
+
+	
 	
 }
