@@ -1,12 +1,19 @@
 package com.project.covid.model;
 
-import java.util.Date;
+import java.sql.Date;
 
-public class InfectionLoc {
+public class LocationVO {
+	private int uid;
 	private String mcode;
 	private String loc;
-	private Date inTime;
-	private Date outTime;
+	private String inTime;
+	private String outTime;
+	public int getUid() {
+		return uid;
+	}
+	public void setUid(int uid) {
+		this.uid = uid;
+	}
 	public String getMcode() {
 		return mcode;
 	}
@@ -19,30 +26,26 @@ public class InfectionLoc {
 	public void setLoc(String loc) {
 		this.loc = loc;
 	}
-	public Date getInTime() {
+	public String getInTime() {
 		return inTime;
 	}
-	public void setInTime(Date inTime) {
+	public void setInTime(String inTime) {
 		this.inTime = inTime;
 	}
-	public Date getOutTime() {
+	public String getOutTime() {
 		return outTime;
 	}
-	public void setOutTime(Date outTime) {
+	public void setOutTime(String outTime) {
 		this.outTime = outTime;
 	}
-	public InfectionLoc(String mcode, String loc, Date inTime, Date outTime) {
+	
+	public LocationVO(int uid, String mcode, String loc, String inTime, String outTime) {
 		super();
+		this.uid = uid;
 		this.mcode = mcode;
 		this.loc = loc;
 		this.inTime = inTime;
 		this.outTime = outTime;
 	}
-	public InfectionLoc() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-	
-	
 	
 }
