@@ -1,0 +1,54 @@
+[
+    {
+        "merged": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\build\\intermediates\\merged_res\\debug\\layout_fragment_advertiser.xml.flat",
+        "source": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\src\\main\\res\\layout\\fragment_advertiser.xml"
+    },
+    {
+        "merged": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\build\\intermediates\\merged_res\\debug\\drawable-hdpi_tile.9.png.flat",
+        "source": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\src\\main\\res\\drawable-hdpi\\tile.9.png"
+    },
+    {
+        "merged": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\build\\intermediates\\merged_res\\debug\\drawable-hdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\src\\main\\res\\drawable-hdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\build\\intermediates\\merged_res\\debug\\menu-v21_scanner_menu.xml.flat",
+        "source": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\src\\main\\res\\menu-v21\\scanner_menu.xml"
+    },
+    {
+        "merged": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\build\\intermediates\\merged_res\\debug\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\src\\main\\res\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\build\\intermediates\\merged_res\\debug\\drawable-mdpi_ic_action_refresh.png.flat",
+        "source": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\src\\main\\res\\drawable-mdpi\\ic_action_refresh.png"
+    },
+    {
+        "merged": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\build\\intermediates\\merged_res\\debug\\drawable-mdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\src\\main\\res\\drawable-mdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\build\\intermediates\\merged_res\\debug\\drawable-xhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\src\\main\\res\\drawable-xhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\build\\intermediates\\merged_res\\debug\\drawable-xxhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\src\\main\\res\\drawable-xxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\build\\intermediates\\merged_res\\debug\\layout_listitem_scanresult.xml.flat",
+        "source": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\src\\main\\res\\layout\\listitem_scanresult.xml"
+    },
+    {
+        "merged": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\build\\intermediates\\merged_res\\debug\\drawable-xxhdpi_ic_action_refresh.png.flat",
+        "source": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\src\\main\\res\\drawable-xxhdpi\\ic_action_refresh.png"
+    },
+    {
+        "merged": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\build\\intermediates\\merged_res\\debug\\drawable-hdpi_ic_action_refresh.png.flat",
+        "source": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\src\\main\\res\\drawable-hdpi\\ic_action_refresh.png"
+    },
+    {
+        "merged": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\build\\intermediates\\merged_res\\debug\\drawable-xhdpi_ic_action_refresh.png.flat",
+        "source": "C:\\Users\\john\\AndroidStudioProjects\\BluetoothAdvertisements_edit\\Application\\src\\main\\res\\drawable-xhdpi\\ic_action_refresh.png"
+    }
+]
