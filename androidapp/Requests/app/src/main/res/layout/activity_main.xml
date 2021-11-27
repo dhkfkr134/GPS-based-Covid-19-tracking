@@ -7,14 +7,24 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <Button android:id="@+id/button2"
-        android:text="로그인"
+    <Button
+        android:id="@+id/button2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <Button android:id="@+id/button1"
-        android:text="내 위치정보 가져오기"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="로그아웃"/>
+
+    <ImageButton
+        android:id="@+id/imageButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/kakao_login_medium_wide" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="GPS끄기" />
 
 
 </LinearLayout>
