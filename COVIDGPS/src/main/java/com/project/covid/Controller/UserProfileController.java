@@ -19,7 +19,7 @@ import com.project.covid.model.UserProfile;
 import com.project.covid.service.KakaoAPI;
 
 
-@Controller
+@RestController
 @RequestMapping(value="/kakao")
 public class UserProfileController {
 
