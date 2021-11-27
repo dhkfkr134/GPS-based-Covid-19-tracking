@@ -68,7 +68,14 @@ public class UserProfileController {
         else
         	mapper.updateUserProfile(userProfile.getId(), userProfile.getAccess_token(),
         			userProfile.getRefresh_token(), userProfile.getCode());   
-        
+
+    }
+    
+    @GetMapping("/token")
+    public String token(@RequestParam("code") String code) {
+    	UserProfile userProfile=mapper.getUserToken(code);
+    	return userProfile.getAccess_token()+"/"+userProfile.getRefresh_token();
+
     }
     
     @GetMapping("/access")

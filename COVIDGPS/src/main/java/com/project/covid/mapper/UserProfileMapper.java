@@ -19,6 +19,9 @@ public interface UserProfileMapper {
 	@Select("SELECT * FROM UserProfile WHERE id=#{id}")
 	UserProfile getUserProfile(@Param("id")String id);
 	
+	@Select("SELECT * FROM UserProfile WHERE code=#{code}")
+	UserProfile getUserToken(@Param("code")String code);
+	
 	@Select("SELECT code FROM UserProfile WHERE refresh_token=#{refresh_token}")
 	String getUserCode(@Param("refresh_token") String refresh_token);
 	
