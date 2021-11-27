@@ -30,11 +30,11 @@ public interface UserProfileMapper {
 	
 	@Insert("INSERT UserProfile VALUES(#{id},#{access_token},#{refresh_token},#{code})")
 	int insertUserProfile(@Param("id")String id, @Param("access_token") String access_token,
-			@Param("refersh_token") String refresh_token, @Param("code") String code);
+			@Param("refresh_token") String refresh_token, @Param("code") String code);
 	
 	@Update("UPDATE UserProfile SET access_token=#{access_token}, refresh_token=#{refresh_token}, code=#{code} WHERE id=#{id}")
 	int updateUserProfile(@Param("id")String id, @Param("access_token") String access_token,
-			@Param("refrsh_token") String refresh_token,@Param("code") String code);
+			@Param("refresh_token") String refresh_token,@Param("code") String code);
 	
 	@Update("UPDATE UserProfile SET access_token=#{access_token}, refresh_token=#{refresh_token} WHERE id=#{id}")
 	int updateToken(@Param("id")String id, @Param("access_token") String access_token,

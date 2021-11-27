@@ -51,7 +51,7 @@ public class UserProfileController {
     
     //로그인 or 회원가입
     @GetMapping("/login")
-    public String login(@RequestParam("code") String code) {
+    public void login(@RequestParam("code") String code) {
         UserProfile userProfile = new UserProfile();
         userProfile.setcode(code);
     	System.out.println("controller code : "+ code);
@@ -62,13 +62,13 @@ public class UserProfileController {
         userProfile.setId(kakao.getUserInfo(userInfo.get("access_token")));
         System.out.println("login Controller : " + userProfile);
         UserProfile temp=mapper.getUserProfile(userProfile.getId());
-        if(temp.getId().equals(""))
+        if(temp==null)
         	mapper.insertUserProfile(userProfile.getId(), userProfile.getAccess_token(),
         			userProfile.getRefresh_token(), userProfile.getCode());
         else
         	mapper.updateUserProfile(userProfile.getId(), userProfile.getAccess_token(),
         			userProfile.getRefresh_token(), userProfile.getCode());   
-        return userInfo.get("access_token")+"/"+userInfo.get("refresh_token");
+        
     }
     
     @GetMapping("/access")
