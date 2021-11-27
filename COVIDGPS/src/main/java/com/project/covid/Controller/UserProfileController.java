@@ -19,7 +19,7 @@ import com.project.covid.model.UserProfile;
 import com.project.covid.service.KakaoAPI;
 
 
-@Controller
+@RestController
 @RequestMapping(value="/kakao")
 public class UserProfileController {
 	
@@ -31,9 +31,11 @@ public class UserProfileController {
     
     @GetMapping("/connect")
     public String connect() {	
-    	return "connect";
+    	return "https://kauth.kakao.com/oauth/authorize?client_id=c8f72fe8e065caa66728ff40de53d9fd"
+    			+ "&redirect_uri=http://115.21.52.248:8080/kakao/login&response_type=code";
     }
     
+    //로그인 or 회원가입
     @GetMapping("/login")
     public String login(@RequestParam("code") String code) {
         UserProfile userProfile = new UserProfile();
@@ -43,9 +45,16 @@ public class UserProfileController {
         userProfile.setAccess_token(userInfo.get("access_token"));
         userProfile.setRefresh_token(userInfo.get("refresh_token"));
         System.out.println("controller access_token : " + userInfo.get("access_token"));
-        userProfile.setUid(kakao.getUserInfo(userInfo.get("access_token")));
+        userProfile.setId(kakao.getUserInfo(userInfo.get("access_token")));
         System.out.println("login Controller : " + userProfile);
-        return userInfo.get("access_code")+"/"+userInfo.get("refresh_token");
+        UserProfile temp=mapper.getUserProfile(userProfile.getId());
+        if(temp.getId().equals(""))
+        	mapper.insertUserProfile(userProfile.getId(), userProfile.getAccess_token(),
+        			userProfile.getRefresh_token(), userProfile.getCode());
+        else
+        	mapper.updateUserProfile(userProfile.getId(), userProfile.getAccess_token(),
+        			userProfile.getRefresh_token(), userProfile.getCode());   
+        return userInfo.get("access_token")+"/"+userInfo.get("refresh_token");
     }
     
     @GetMapping("/access")
