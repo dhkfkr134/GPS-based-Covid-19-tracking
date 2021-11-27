@@ -22,6 +22,20 @@ import com.project.covid.service.KakaoAPI;
 @RestController
 @RequestMapping(value="/kakao")
 public class UserProfileController {
+
+	public UserProfileController(UserProfileMapper mapper) {
+		this.mapper = mapper;
+	}
+	
+	
+	@GetMapping("/user/{id}")
+	public UserProfile getUserProfile(@PathVariable("id") String id) {
+		UserProfile u=mapper.getUserProfile(id);
+		System.out.println(u.toString());
+		return u;
+		
+	}
+
 	
 	@Autowired
     private KakaoAPI kakao;
