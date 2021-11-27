@@ -51,7 +51,7 @@ public class UserProfileController {
     
     //로그인 or 회원가입
     @GetMapping("/login")
-    public String login(@RequestParam("code") String code) {
+    public void login(@RequestParam("code") String code) {
         UserProfile userProfile = new UserProfile();
         userProfile.setcode(code);
     	System.out.println("controller code : "+ code);
@@ -68,7 +68,12 @@ public class UserProfileController {
         else
         	mapper.updateUserProfile(userProfile.getId(), userProfile.getAccess_token(),
         			userProfile.getRefresh_token(), userProfile.getCode());   
-        return userInfo.get("access_token")+"/"+userInfo.get("refresh_token");
+    }
+    
+    @GetMapping("/token")
+    public String token(@RequestParam("code") String code) {
+    	UserProfile userProfile=mapper.getUserToken(code);
+    	return userProfile.getAccess_token()+"/"+userProfile.getRefresh_token();
     }
     
     @GetMapping("/access")
