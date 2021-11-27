@@ -35,42 +35,53 @@ public class UserLocationController {
 		this.mapper = mapper;
 	}
 	
-	@GetMapping("/infection/{uid}")
-	public List<Integer> getUserIdLocation(@PathVariable("uid") Integer uid) {
+	@GetMapping("/infection/{id}")
+	public List<Integer> getUserIdLocation(@PathVariable("id") Integer id) {
 		List<Integer> uid_List = new ArrayList<>();
 		List<InfectionLoc> mcode_list;
-		mcode_list = mapper.getUidLocation(uid);
+		mcode_list = mapper.getUidLocation(id);
+		SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date it;
+		Date ot;
 		for (InfectionLoc loc : mcode_list) {
 			String[] m_list = loc.getMcode().split("/");
-			if(loc.getMcode().length()==0) {
-				uid_List.addAll(mapper.getUidContactorLoc(loc.getLoc(), loc.getInTime(), loc.getOutTime()));
-			}else {
-				for (String str : m_list) {
-					uid_List.addAll(mapper.getUidContactor(str, loc.getInTime(), loc.getOutTime()));
-				}				
+			try {
+				it=fm.parse(loc.getInTime());
+				ot=fm.parse(loc.getOutTime());
+				if(loc.getMcode().length()==0) {	
+					uid_List.addAll(mapper.getUidContactorLoc(loc.getLoc(), it, ot));
+				}else {
+					for (String str : m_list) {
+						uid_List.addAll(mapper.getUidContactor(str, it, ot));
+					}				
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
 			}
 		}
 		HashSet<Integer> dupData = new HashSet<Integer>(uid_List);
 		uid_List = new ArrayList<Integer>(dupData);
-		uid_List.remove(Integer.valueOf(uid));
+		uid_List.remove(Integer.valueOf(id));
 		return uid_List;
 	}
 	
 	@PostMapping("/GPS")
-	public void putUserIdLocation(@RequestBody LocationVO lvo) {
+	public void putUserIdLocation(LocationVO lvo) {
 		SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		System.out.println(lvo.toString());
 		try {
+			
 			Date it = fm.parse(lvo.getInTime());
 			Date ot = fm.parse(lvo.getOutTime());
-			mapper.putUserIdLocation(lvo.getUid(), lvo.getMcode(), lvo.getLoc(), it,ot);
+			mapper.putUserIdLocation(lvo.getId(), lvo.getMcode(), lvo.getLoc(), it,ot);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-
+		
 	}
 	
 	@PostMapping("/bluetooth")
-	public void putBluetoothUserIdLocation(@RequestBody BluetoothVO bvo) {
+	public void putBluetoothUserIdLocation(BluetoothVO bvo) {
 		SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar cal=Calendar.getInstance();
 		try {
@@ -78,7 +89,7 @@ public class UserLocationController {
 			cal.setTime(it);
 			cal.add(Calendar.HOUR,+2);
 			Date ot=cal.getTime();
-			mapper.putUserIdLocation(bvo.getUid(), "", mapper.gethostIdLocation(bvo.getHostID()), it, ot);
+			mapper.putUserIdLocation(bvo.getId(), "", mapper.gethostIdLocation(bvo.getHostID()), it, ot);
 		}catch(Exception e) {
 			System.out.println(e);
 		}

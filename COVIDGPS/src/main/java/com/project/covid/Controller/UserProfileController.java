@@ -25,11 +25,12 @@ public class UserProfileController {
 	}
 	
 	
-	
-	
 	@GetMapping("/user/{id}")
 	public UserProfile getUserProfile(@PathVariable("id") String id) {
-		return mapper.getUserProfile(id);
+		UserProfile u=mapper.getUserProfile(id);
+		System.out.println(u.toString());
+		return u;
+		
 	}
 	
 	@GetMapping("/user/all")
