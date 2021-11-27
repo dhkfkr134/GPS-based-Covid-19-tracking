@@ -55,14 +55,19 @@ public class UserProfileController {
     
     @GetMapping("/refresh")
     public String refresh(@RequestParam("refresh_token") String refresh_token) {
-    	return kakao.updateToken(refresh_token);
+    	String id=mapper.getUserId(refresh_token);
+    	HashMap<String,String> userInfo=kakao.updateToken(refresh_token);
+    	mapper.updateToken(id, userInfo.get("access_token"), userInfo.get(refresh_token));
+        return userInfo.get("access_code")+"/"+userInfo.get("refresh_token");
     }
     
     @GetMapping("/code")
     public String getUserInfo(@RequestParam("refresh_token") String refresh_token) {
+    	String id=mapper.getUserId(refresh_token);
     	String code=mapper.getUserCode(refresh_token);
     	System.out.println("controller code : "+ code);
         HashMap<String, String> userInfo = kakao.getAccessToken(code);
+        mapper.updateUserProfile(id, userInfo.get("access_token"), userInfo.get("refresh_token"), code);
         return userInfo.get("access_code")+"/"+userInfo.get("refresh_token");
     }
     

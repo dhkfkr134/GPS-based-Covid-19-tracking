@@ -22,6 +22,9 @@ public interface UserProfileMapper {
 	@Select("SELECT code FROM UserProfile WHERE refresh_token=#{refresh_token}")
 	String getUserCode(@Param("refresh_token") String refresh_token);
 	
+	@Select("SELECT id FROM UserProfile WHERE refresh_token=#{refresh_token}")
+	String getUserId(@Param("refresh_token") String refresh_token);
+	
 	@Select("SELECT * FROM UserProfile")
 	List<UserProfile> getUserProfileList();
 	
@@ -33,11 +36,9 @@ public interface UserProfileMapper {
 	int updateUserProfile(@Param("id")String id, @Param("access_token") String access_token,
 			@Param("refrsh_token") String refresh_token,@Param("code") String code);
 	
-	@Update("UPDATE UserProfile SET access_token=#{access_token} WHERE id=#{id}")
-	int updateAccess_token(@Param("id")String id, @Param("access_token") String access_token);
-	
-	@Update("UPDATE UserProfile SET refresh_token=#{refresh_token} WHERE id=#{id}")
-	int updateRefresh_token(@Param("id")String id, @Param("refresh_token") String refresh_token);
+	@Update("UPDATE UserProfile SET access_token=#{access_token}, refresh_token=#{refresh_token} WHERE id=#{id}")
+	int updateToken(@Param("id")String id, @Param("access_token") String access_token,
+			@Param("refresh_token") String refresh_token);
 	
 	@Delete("DELETE FROM UserProfile WHERE id=#{id}")
 	int deleteUserProfile(@Param("id") String id);

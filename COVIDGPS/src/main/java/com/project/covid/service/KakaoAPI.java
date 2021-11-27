@@ -102,9 +102,10 @@ public class KakaoAPI {
 		return Integer.toString(responseCode);	
 	}
 	
-	public String updateToken(String refresh_token) {
+	public HashMap<String,String> updateToken(String refresh_token) {
 		String reqURL = "https://kauth.kakao.com/oauth/token";
 		String access_token="";
+		HashMap<String,String> userInfo=new HashMap<>();
 		try {
 			URL url = new URL(reqURL);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -141,8 +142,11 @@ public class KakaoAPI {
 			JsonElement element = parser.parse(result);
 
 			access_token = element.getAsJsonObject().get("access_token").getAsString();
-			refresh_token = element.getAsJsonObject().get("refresh_token").getAsString();
-
+			if(element.getAsJsonObject().has("refresh_token")) 
+				refresh_token= element.getAsJsonObject().get("refresh_token").getAsString();
+			
+			userInfo.put("access_token", access_token);
+			userInfo.put("refresh_token", refresh_token);
 			System.out.println("access_token : " + access_token);
 			System.out.println("refresh_token : " + refresh_token);
 			
@@ -153,7 +157,7 @@ public class KakaoAPI {
 			e.printStackTrace();
 		}
 
-		return access_token;
+		return userInfo;
 	}
 	
 	public String getUserInfo(String access_Token) {
