@@ -1,0 +1,91 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<!--
+3 Copyright 2013 The Android Open Source Project
+4
+5 Licensed under the Apache License, Version 2.0 (the "License");
+6 you may not use this file except in compliance with the License.
+7 You may obtain a copy of the License at
+8
+9     http://www.apache.org/licenses/LICENSE-2.0
+10
+11 Unless required by applicable law or agreed to in writing, software
+12 distributed under the License is distributed on an "AS IS" BASIS,
+13 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+14 See the License for the specific language governing permissions and
+15 limitations under the License.
+16-->
+17<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+18    package="com.example.android.bluetoothadvertisements"
+19    android:versionCode="1"
+20    android:versionName="1.0" >
+21
+22    <uses-sdk
+23        android:minSdkVersion="21"
+23-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml
+24        android:targetSdkVersion="28" />
+24-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml
+25
+26    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+26-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:22:5-74
+26-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:22:22-71
+27    <uses-permission android:name="android.permission.BLUETOOTH" />
+27-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:23:5-68
+27-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:23:22-65
+28    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+28-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:24:5-77
+28-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:24:22-74
+29    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+29-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:25:5-78
+29-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:25:22-76
+30    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+30-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:26:5-80
+30-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:26:22-78
+31
+32    <application
+32-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:28:5-49:19
+33        android:allowBackup="true"
+33-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:29:9-35
+34        android:appComponentFactory="android.support.v4.app.CoreComponentFactory"
+34-->[com.android.support:support-compat:28.0.0] C:\Users\john\.gradle\caches\transforms-3\d732f4d1d5007e0f8f7829de1b79d464\transformed\support-compat-28.0.0\AndroidManifest.xml:22:18-91
+35        android:debuggable="true"
+36        android:icon="@drawable/ic_launcher"
+36-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:30:9-45
+37        android:label="@string/app_name"
+37-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:31:9-41
+38        android:testOnly="true"
+39        android:theme="@style/AppTheme" >
+39-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:32:9-40
+40        <activity
+40-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:33:9-40:20
+41            android:name="com.example.android.bluetoothadvertisements.MainActivity"
+41-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:34:13-41
+42            android:label="@string/app_name" >
+42-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:35:13-45
+43            <intent-filter>
+43-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:36:13-39:29
+44                <action android:name="android.intent.action.MAIN" />
+44-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:37:17-69
+44-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:37:25-66
+45
+46                <category android:name="android.intent.category.LAUNCHER" />
+46-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:38:17-77
+46-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:38:27-74
+47            </intent-filter>
+48        </activity>
+49
+50        <!--
+51             Service to handle BLE Advertising - Using a service allows advertising to continue
+52             when the app is no longer on screen in a reliable manner.
+53        -->
+54        <service
+54-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:44:9-48:19
+55            android:name="com.example.android.bluetoothadvertisements.AdvertiserService"
+55-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:45:13-46
+56            android:enabled="true"
+56-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:46:13-35
+57            android:exported="false" >
+57-->C:\Users\john\AndroidStudioProjects\BluetoothAdvertisements_edit\Application\src\main\AndroidManifest.xml:47:13-37
+58        </service>
+59    </application>
+60
+61</manifest>

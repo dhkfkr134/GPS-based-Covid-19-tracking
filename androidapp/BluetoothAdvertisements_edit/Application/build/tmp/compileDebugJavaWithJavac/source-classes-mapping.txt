@@ -1,0 +1,19 @@
+com/example/android/bluetoothadvertisements/AdvertiserService.java
+ com.example.android.bluetoothadvertisements.AdvertiserService
+ com.example.android.bluetoothadvertisements.AdvertiserService$1
+ com.example.android.bluetoothadvertisements.AdvertiserService$SampleAdvertiseCallback
+com/example/android/bluetoothadvertisements/AdvertiserFragment.java
+ com.example.android.bluetoothadvertisements.AdvertiserFragment
+ com.example.android.bluetoothadvertisements.AdvertiserFragment$1
+com/example/android/bluetoothadvertisements/MainActivity.java
+ com.example.android.bluetoothadvertisements.MainActivity
+com/example/android/bluetoothadvertisements/Constants.java
+ com.example.android.bluetoothadvertisements.Constants
+com/example/android/bluetoothadvertisements/ScannerFragment.java
+ com.example.android.bluetoothadvertisements.ScannerFragment
+ com.example.android.bluetoothadvertisements.ScannerFragment$1
+ com.example.android.bluetoothadvertisements.ScannerFragment$SampleScanCallback
+com/example/android/bluetoothadvertisements/BuildConfig.java
+ com.example.android.bluetoothadvertisements.BuildConfig
+com/example/android/bluetoothadvertisements/ScanResultAdapter.java
+ com.example.android.bluetoothadvertisements.ScanResultAdapter

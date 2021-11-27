@@ -1,15 +1,19 @@
 package com.project.covid.model;
 
 public class UserProfile {
-	int uid;
+	String uid;
 	String access_token;
 	String refresh_token;
-	String jwt;
-	String email;
-	public int getUid() {
+	String code;
+	
+	public UserProfile() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public String getUid() {
 		return uid;
 	}
-	public void setUid(int uid) {
+	public void setUid(String uid) {
 		this.uid = uid;
 	}
 	public String getAccess_token() {
@@ -24,26 +28,19 @@ public class UserProfile {
 	public void setRefresh_token(String refresh_token) {
 		this.refresh_token = refresh_token;
 	}
-	public String getJwt() {
-		return jwt;
+	public String getCode() {
+		return code;
 	}
-	public void setJwt(String jwt) {
-		this.jwt = jwt;
+	public void setcode(String code) {
+		this.code = code;
 	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
-	public UserProfile(int uid, String access_token, String refresh_token, String jwt, String email) {
+
+	public UserProfile(String uid, String access_token, String refresh_token, String code) {
 		super();
 		this.uid = uid;
 		this.access_token = access_token;
 		this.refresh_token = refresh_token;
-		this.jwt = jwt;
-		this.email = email;
+		this.code = code;
 	}
 	
 	
