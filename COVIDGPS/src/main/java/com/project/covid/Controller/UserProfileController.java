@@ -23,20 +23,6 @@ import com.project.covid.service.KakaoAPI;
 @RequestMapping(value="/kakao")
 public class UserProfileController {
 
-	public UserProfileController(UserProfileMapper mapper) {
-		this.mapper = mapper;
-	}
-	
-	
-	@GetMapping("/user/{id}")
-	public UserProfile getUserProfile(@PathVariable("id") String id) {
-		UserProfile u=mapper.getUserProfile(id);
-		System.out.println(u.toString());
-		return u;
-		
-	}
-
-	
 	@Autowired
     private KakaoAPI kakao;
 	
@@ -72,8 +58,8 @@ public class UserProfileController {
     
     @GetMapping("/token")
     public String token(@RequestParam("code") String code) {
-    	UserProfile userProfile=mapper.getUserToken(code);
-    	return userProfile.getAccess_token()+"/"+userProfile.getRefresh_token();
+    	UserProfile userProfile=mapper.getUserToken(code); 
+    	return userProfile.getId()+"/"+userProfile.getAccess_token()+"/"+userProfile.getRefresh_token();
     }
     
     @GetMapping("/access")
@@ -100,8 +86,10 @@ public class UserProfileController {
     }
     
     @GetMapping("/logout")
-    public void logout(@RequestParam("access_token") String access_token) {
+    public void logout(@RequestParam("id") String id, @RequestParam("access_token") String access_token) {
+    	String empty="";
     	kakao.logout(access_token);
+    	mapper.logout(id, empty);
     }
 }
 
