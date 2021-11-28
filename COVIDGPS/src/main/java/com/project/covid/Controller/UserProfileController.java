@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.covid.mapper.UserProfileMapper;
 import com.project.covid.model.UserProfile;
-import com.project.covid.service.KakaoAPI;
+import com.project.covid.service.UserProfileService;
 
 
 @RestController
@@ -24,7 +24,7 @@ import com.project.covid.service.KakaoAPI;
 public class UserProfileController {
 
 	@Autowired
-    private KakaoAPI kakao;
+    private UserProfileService kakao;
 	
 	@Autowired
 	private UserProfileMapper mapper;

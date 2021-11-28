@@ -17,7 +17,7 @@ import com.google.gson.JsonParser;
 
 
 @Service
-public class KakaoAPI {
+public class UserProfileService {
 
 	public HashMap<String, String> getAccessToken(String authorize_code) {
 
@@ -224,5 +224,37 @@ public class KakaoAPI {
 	        // TODO Auto-generated catch block
 	        e.printStackTrace();
 	    }
+	}
+	
+	public void sendMessage(String access_token) {
+		String reqURL = "https://kapi.kakao.com//v2/api/talk/memo/default/send";
+		try {
+			URL url = new URL(reqURL);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("POST");
+
+			// 요청에 필요한 Header에 포함될 내용
+			conn.setRequestProperty("Authorization", "Bearer " + access_token);
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+			StringBuilder sb = new StringBuilder();
+			sb.append("template_object=");
+			bw.write(sb.toString());
+			JsonObject obj=new JsonObject();
+			obj.addProperty("object_type", "text");
+			obj.addProperty("image_url", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJq1hDW8VzhXJ0G0QL8ER720BtWKuWvLNIsw&usqp=CAU");
+			obj.addProperty("image_width", "80");
+			obj.addProperty("image_height","80");
+			obj.addProperty("text","코로나 확진자와 접촉 의심 됩니다. 가까운 보건소나 병원에서 코로나 검사 받길 권장드립니다.");
+			bw.write(obj.toString());
+			bw.flush();
+			
+			int responseCode = conn.getResponseCode();
+			System.out.println("responseCode : " + responseCode);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }

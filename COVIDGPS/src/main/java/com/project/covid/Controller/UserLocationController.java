@@ -4,12 +4,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,49 +22,38 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.covid.mapper.UserLocationMapper;
+import com.project.covid.mapper.UserProfileMapper;
 import com.project.covid.model.BluetoothVO;
 import com.project.covid.model.InfectionLoc;
 import com.project.covid.model.LocationVO;
 import com.project.covid.model.UserLocation;
+import com.project.covid.model.UserProfile;
+import com.project.covid.service.UserLocationService;
+import com.project.covid.service.UserProfileService;
 
 @RestController
 @RequestMapping("/location")
 public class UserLocationController {
+	
+	@Autowired
 	private UserLocationMapper mapper;
 
-	public UserLocationController(UserLocationMapper mapper) {
-		super();
-		this.mapper = mapper;
-	}
+	@Autowired
+	private UserProfileMapper userMapper;
+	@Autowired
+	private UserLocationService service;
 	
 	@GetMapping("/infection/{id}")
-	public List<String> getUserIdLocation(@PathVariable("id") String id) {
-		List<String> uid_List = new ArrayList<>();
+	public void getUserIdLocation(@PathVariable("id") String id) {
 		List<InfectionLoc> mcode_list;
 		mcode_list = mapper.getUidLocation(id);
-		SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date it;
-		Date ot;
-		for (InfectionLoc loc : mcode_list) {
-			String[] m_list = loc.getMcode().split("/");
-			try {
-				it=fm.parse(loc.getInTime());
-				ot=fm.parse(loc.getOutTime());
-				if(loc.getMcode().length()==0) {	
-					uid_List.addAll(mapper.getUidContactorLoc(loc.getLoc(), it, ot));
-				}else {
-					for (String str : m_list) {
-						uid_List.addAll(mapper.getUidContactor(str, it, ot));
-					}				
-				}
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
+		List<String> uid_list=service.trackingId(mcode_list, id);
+		UserProfileService userService=new UserProfileService();
+		for(String uid : uid_list) {
+			UserProfile userProfile=userMapper.getUserProfile(uid);
+			HashMap<String,String> token=userService.updateToken(userProfile.getRefresh_token());
+			userService.sendMessage(token.get("access_token"));
 		}
-		HashSet<String> dupData = new HashSet<String>(uid_List);
-		uid_List = new ArrayList<String>(dupData);
-		uid_List.remove(Integer.valueOf(id));
-		return uid_List;
 	}
 	
 	@PostMapping("/GPS")
