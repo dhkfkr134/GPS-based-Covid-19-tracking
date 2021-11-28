@@ -22,36 +22,27 @@ public class MainActivity extends AppCompatActivity {
     private String test2;
     private String access_token=null;
     private String refresh_token=null;
-
+    private String userID;
+    //로그인 요청
     public String confirmAT(){
+        System.out.println("test10 : ");
         OkHttpClient client = new OkHttpClient();
-        if(access_token==null){
-
-            try {
-                String url = "http://115.21.52.248:8080/kakao/connect";
-                Request.Builder builder=new Request.Builder().url(url).get();
-                Request request= builder.build();
-                Response response= client.newCall(request).execute();
-                ResponseBody body=response.body();
-                return body.string();
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-        }else{
             try{
                 String url="http://115.21.52.248:8080/kakao/access?access_token="+access_token;
                 Request.Builder builder=new Request.Builder().url(url).get();
                 Request request= builder.build();
                 Response response= client.newCall(request).execute();
-                if(response.isSuccessful()){
+
+                if(response.body().string().equals("200")){
                     ResponseBody body=response.body();
                     if(body!=null){
-                        System.out.println(body.string());
+                        System.out.println("body!=null");
                     }else{
                         System.out.println("정보없음!");
                     }
                     return "";
-                }else{
+                }
+                    else{
                     url="http://115.21.52.248:8080/kakao/refresh?refresh_token="+refresh_token;
                     builder=new Request.Builder().url(url).get();
                     request=builder.build();
@@ -60,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             }catch(Exception e){
                 e.printStackTrace();
             }
-        }
+        //access_token=null;
         return "";
     }
     @Override
@@ -72,49 +63,67 @@ public class MainActivity extends AppCompatActivity {
         button2 = (Button) findViewById(R.id.button2);
         imageButton = (ImageButton) findViewById(R.id.imageButton);
 
-        Intent intent = getIntent();
-        access_token = intent.getStringExtra("access_token");
-        refresh_token = intent.getStringExtra("refresh_token");
-        System.out.println("@@@@@@@@: "+access_token + " "+refresh_token);
+//            Intent intent = getIntent();
+//            access_token = intent.getStringExtra("access_token");
+//            refresh_token = intent.getStringExtra("refresh_token");
+//            userID = intent.getStringExtra("userID");
+            System.out.println("test101: " + access_token + " " + refresh_token + " "+userID);
 
         new Thread() {
             public void run() {
-                test2 = confirmAT();
+                test2 = new Requests("http://115.21.52.248:8080/kakao/connect").getLoginUrl();
             }
         }.start();
 
-        //버튼 클릭리스너
-        if(access_token==null) {
-            //무조건 로그인버튼보이게
-            button2.setVisibility(View.GONE);
-            imageButton.setVisibility(View.VISIBLE);
 
+        //test
+
+        if(access_token==null) {
+            imageButton.setVisibility(View.VISIBLE);
+            //버튼 클릭리스너
+            System.out.println("get access token test: ");
             imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    System.out.println("accesstoken : " + access_token);
+                    System.out.println("test2 : " + access_token);
+                    new Thread() {
+                        public void run() {
+                            test2 = new Requests("http://115.21.52.248:8080/kakao/connect").getLoginUrl();
+                        }
+                    }.start();
 
                     Intent intent = new Intent(getApplicationContext(), WebViewPage.class);
                     intent.putExtra("my_data", test2);
 
-                    System.out.println("@@@@@@@@@@@ 로그인버튼 클릭 : " + test2);
-                    //로그인하고나면 로그아웃만 생기게
+                    System.out.println("login button click : " + test2);
+                   // 로그인하고나면 로그아웃만 생기게
                     imageButton.setVisibility(View.GONE);
                     button2.setVisibility(View.VISIBLE);
-                    startActivity(intent);
+                    startActivityForResult(intent, 100);
                 }
             });
         }else {
+            System.out.println("access_token is not null : " + access_token);
             imageButton.setVisibility(View.GONE);
             button2.setVisibility(View.VISIBLE);
-            button2.setOnClickListener(new View.OnClickListener(){
+            button2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //access_token 해제하는 코드
+                    new Thread() {
+                        public void run() {
+                            confirmAT();
+                            new Requests("http://115.21.52.248:8080/kakao/logout?userID=").kakaoLogout(userID, access_token);
+
+                        }
+                    }.start();
+
+                    System.out.println("logout button click!"+ userID+" "+access_token+" "+refresh_token );
+                    imageButton.setVisibility(View.VISIBLE);
+                    button2.setVisibility(View.GONE);
                 }
             });
         }
-
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,4 +131,72 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent resultIntent){
+            super.onActivityResult(requestCode,resultCode,resultIntent);
+             access_token = resultIntent.getStringExtra("access_token");
+            refresh_token = resultIntent.getStringExtra("refresh_token");
+             userID = resultIntent.getStringExtra("userID");
+            System.out.println("get Activity result: " + access_token + " " + refresh_token + " "+userID);
+
+
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if(access_token==null) {
+            imageButton.setVisibility(View.VISIBLE);
+            //버튼 클릭리스너
+            System.out.println("onResume login : ");
+            imageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.println("onResume login : " + access_token);
+                    new Thread() {
+                        public void run() {
+                            test2 = new Requests("http://115.21.52.248:8080/kakao/connect").getLoginUrl();
+                        }
+                    }.start();
+
+                    Intent intent = new Intent(getApplicationContext(), WebViewPage.class);
+                    intent.putExtra("my_data", test2);
+
+                    System.out.println("onResume 로그인버튼 클릭 : " + test2);
+                    // 로그인하고나면 로그아웃만 생기게
+                    imageButton.setVisibility(View.GONE);
+                    button2.setVisibility(View.VISIBLE);
+                    startActivityForResult(intent, 100);
+                }
+            });
+        }else {
+            System.out.println("onResume logout  : " + access_token);
+            imageButton.setVisibility(View.GONE);
+            button2.setVisibility(View.VISIBLE);
+            button2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //access_token 해제하는 코드
+                    new Thread() {
+                        public void run() {
+                            confirmAT();
+                            new Requests("http://115.21.52.248:8080/kakao/logout?id=").kakaoLogout(userID, access_token);
+                            access_token=null;
+                        }
+                    }.start();
+
+
+                    imageButton.setVisibility(View.VISIBLE);
+                    button2.setVisibility(View.GONE);
+                }
+            });
+        }
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //gps잠금 버튼
+            }
+        });
+
+    }
+
 }

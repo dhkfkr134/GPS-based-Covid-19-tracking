@@ -86,7 +86,23 @@ public class Requests {
         }
         return "false";
     }
+    public boolean kakaoLogout(String userID, String access_token){
+        OkHttpClient client = new OkHttpClient();
+        try{
+            Request.Builder builder = new Request.Builder().url(mURL+userID+"&&access_token="+access_token).get();
+//            builder.addHeader()
+            Request request = builder.build();
+            Response response = client.newCall(request).execute();
 
+            ResponseBody body = response.body();
+            System.out.println(body.string());
+
+            return true;
+        }catch(Exception e){
+            System.out.println("Exception");
+        }
+        return false;
+    }
 
 
 }

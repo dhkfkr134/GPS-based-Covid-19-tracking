@@ -22,12 +22,13 @@ public class WebViewPage extends AppCompatActivity {
     private String access_token;
     private String refresh_token;
     private WebView webView;
+    private String userID;
     private void getAccess_token(String code){
         try{
             OkHttpClient client=new OkHttpClient();
             Thread.sleep(1000);
             String url = "http://115.21.52.248:8080/kakao/token?code="+code;
-            System.out.println(code);
+            System.out.println("webview1 "+code);
             Request.Builder builder=new Request.Builder().url(url).get();
             Request request= builder.build();
             Response response= client.newCall(request).execute();
@@ -42,10 +43,11 @@ public class WebViewPage extends AppCompatActivity {
                         ar_token=body.string();
                     } while(!ar_token.equals("failed"));
                 }
-                System.out.println(ar_token);
+                System.out.println("webview2 : "+ar_token);
                 ar=ar_token.split("/");
-                access_token=ar[0];
-                refresh_token=ar[1];
+                userID=ar[0];
+                access_token=ar[1];
+                refresh_token=ar[2];
             }
         }catch (Exception e){
 
@@ -65,7 +67,6 @@ public class WebViewPage extends AppCompatActivity {
 
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-
         webView.loadUrl(myData);
         webView.post(new Runnable() {
             @Override
@@ -75,18 +76,25 @@ public class WebViewPage extends AppCompatActivity {
                 webView.setWebViewClient(new WebViewClientClass());//새창열기 없이 웹뷰 내에서 다시 열기//페이지 이동 원활히 하기위해 사용
             }
         });
+
     }
     private class WebViewClientClass extends WebViewClient {//페이지 이동
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            Log.d("check URL",url);
+            Log.d("webview3 check URL",url);
             if(url.contains("http://115.21.52.248:8080/kakao/login?code")){
                 String s[];
                 s=url.split("code=");
-                System.out.println(s[1]);
+                System.out.println("webview4 : "+s[1]);
                 new Thread(){
                     public void run(){
                         getAccess_token(s[1]);
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("access_token",access_token);
+                        resultIntent.putExtra("refresh_token",refresh_token);
+                        resultIntent.putExtra("userID",userID);
+                        setResult(100, resultIntent);
+                        finish();
                     }
                 }.start();
             }
@@ -100,11 +108,14 @@ public class WebViewPage extends AppCompatActivity {
         if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack()) {//웹뷰에서 뒤로가기 버튼을 누르면 뒤로가짐
             webView.goBack();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            System.out.println("webView100 : "+access_token+refresh_token+userID);
             intent.putExtra("access_token",access_token);
             intent.putExtra("refresh_token",refresh_token);
+            intent.putExtra("userID",userID);
             startActivity(intent);
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
+
 }
