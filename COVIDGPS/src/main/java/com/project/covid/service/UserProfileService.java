@@ -236,16 +236,15 @@ public class UserProfileService {
 			// 요청에 필요한 Header에 포함될 내용
 			conn.setRequestProperty("Authorization", "Bearer " + access_token);
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-			StringBuilder sb = new StringBuilder();
-			sb.append("template_object=");
-			bw.write(sb.toString());
+			JsonObject o=new JsonObject();
 			JsonObject obj=new JsonObject();
 			obj.addProperty("object_type", "text");
 			obj.addProperty("image_url", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJq1hDW8VzhXJ0G0QL8ER720BtWKuWvLNIsw&usqp=CAU");
 			obj.addProperty("image_width", "80");
 			obj.addProperty("image_height","80");
 			obj.addProperty("text","코로나 확진자와 접촉 의심 됩니다. 가까운 보건소나 병원에서 코로나 검사 받길 권장드립니다.");
-			bw.write(obj.toString());
+			o.addProperty("template_object", obj.toString());
+			bw.write(o.toString());
 			bw.flush();
 			
 			int responseCode = conn.getResponseCode();

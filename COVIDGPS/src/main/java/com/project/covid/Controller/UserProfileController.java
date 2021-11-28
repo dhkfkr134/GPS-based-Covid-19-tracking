@@ -96,6 +96,11 @@ public class UserProfileController {
     	kakao.logout(access_token);
     	mapper.logout(id, empty);
     }
+    
+    @GetMapping("/test")
+    public void test(@RequestParam("id") String id) {
+    	kakao.sendMessage(id);
+    }
 }
 
 //@RestController
