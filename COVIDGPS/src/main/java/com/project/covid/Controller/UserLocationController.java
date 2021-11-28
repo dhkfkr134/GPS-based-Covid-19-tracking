@@ -36,7 +36,7 @@ public class UserLocationController {
 	}
 	
 	@GetMapping("/infection/{id}")
-	public List<Integer> getUserIdLocation(@PathVariable("id") Integer id) {
+	public List<Integer> getUserIdLocation(@PathVariable("id") String id) {
 		List<Integer> uid_List = new ArrayList<>();
 		List<InfectionLoc> mcode_list;
 		mcode_list = mapper.getUidLocation(id);
