@@ -18,7 +18,7 @@ public interface UserLocationMapper {
 	List<InfectionLoc> getUidLocation(@Param("id")String id);
 	
 	@Select("SELECT id from UserLocation WHERE (mcode LIKE CONCAT('%/',#{mcode},'/%')or mcode LIKE CONCAT(#{mcode},'/','%') or mcode LIKE CONCAT('%/',#{mcode},''))and (( inTime <= #{inTime} and #{inTime} <= outTime) or (inTime<=#{outTime} and outTime<=#{outTime}))")
-	ArrayList<Integer> getUidContactor(@Param("mcode") String mcode,@Param("inTime")Date inTime,@Param("outTime")Date outTime);
+	ArrayList<String> getUidContactor(@Param("mcode") String mcode,@Param("inTime")Date inTime,@Param("outTime")Date outTime);
 	
 	@Insert("Insert into UserLocation values(#{id},#{mcode},#{loc},#{inTime},#{outTime},#{address})")
 	void putUserIdLocation(@Param("id")String id,@Param("mcode")String mcode,@Param("loc")String loc,@Param("inTime")Date inTime,@Param("outTime")Date outTime,@Param("address")String address);
@@ -27,6 +27,6 @@ public interface UserLocationMapper {
 	String gethostIdLocation(@Param("hostID")String hostID);
 	
 	@Select("SELECT id from UserLocation WHERE address=#{loc} and (( inTime <= #{inTime} and #{inTime} <= outTime) or (inTime<=#{outTime} and outTime<=#{outTime}))")
-	ArrayList<Integer> getUidContactorLoc(@Param("loc")String loc,@Param("inTime")Date inTime,@Param("outTime")Date outTime);
+	ArrayList<String> getUidContactorLoc(@Param("loc")String loc,@Param("inTime")Date inTime,@Param("outTime")Date outTime);
 }
 

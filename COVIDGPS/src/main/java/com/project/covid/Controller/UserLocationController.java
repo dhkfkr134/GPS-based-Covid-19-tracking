@@ -36,8 +36,8 @@ public class UserLocationController {
 	}
 	
 	@GetMapping("/infection/{id}")
-	public List<Integer> getUserIdLocation(@PathVariable("id") String id) {
-		List<Integer> uid_List = new ArrayList<>();
+	public List<String> getUserIdLocation(@PathVariable("id") String id) {
+		List<String> uid_List = new ArrayList<>();
 		List<InfectionLoc> mcode_list;
 		mcode_list = mapper.getUidLocation(id);
 		SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -59,8 +59,8 @@ public class UserLocationController {
 				e.printStackTrace();
 			}
 		}
-		HashSet<Integer> dupData = new HashSet<Integer>(uid_List);
-		uid_List = new ArrayList<Integer>(dupData);
+		HashSet<String> dupData = new HashSet<String>(uid_List);
+		uid_List = new ArrayList<String>(dupData);
 		uid_List.remove(Integer.valueOf(id));
 		return uid_List;
 	}
