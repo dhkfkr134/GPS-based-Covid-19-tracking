@@ -39,6 +39,9 @@ public interface UserProfileMapper {
 	int updateUserProfile(@Param("id")String id, @Param("access_token") String access_token,
 			@Param("refresh_token") String refresh_token,@Param("code") String code);
 	
+	@Update("UPDATE UserProfile SET access_token=#{empty}, refresh_token=#{empty}, code=#{empty} WHERE id=#{id}")
+	int logout(@Param("id")String id, @Param("empty") String empty);
+	
 	@Update("UPDATE UserProfile SET access_token=#{access_token}, refresh_token=#{refresh_token} WHERE id=#{id}")
 	int updateToken(@Param("id")String id, @Param("access_token") String access_token,
 			@Param("refresh_token") String refresh_token);
