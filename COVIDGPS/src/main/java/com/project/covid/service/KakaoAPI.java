@@ -82,6 +82,7 @@ public class KakaoAPI {
 	}
 	
 	public String access(String access_token) {
+		System.out.println("access");
 		String reqURL = "https://kapi.kakao.com/v2/user/me";
 		int responseCode=0;
 		try {
@@ -93,7 +94,7 @@ public class KakaoAPI {
 			conn.setRequestProperty("Authorization", "Bearer " + access_token);
 
 			 responseCode= conn.getResponseCode();
-			
+			System.out.println("access response : "+responseCode);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -125,7 +126,7 @@ public class KakaoAPI {
 
 			// 결과 코드가 200이라면 성공
 			int responseCode = conn.getResponseCode();
-			System.out.println("responseCode : " + responseCode);
+			System.out.println("refresh response : " + responseCode);
 
 			// 요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -198,16 +199,17 @@ public class KakaoAPI {
 		return id;
 	}
 
-	public void logout(String access_Token) {
+	public void logout(String access_token) {
 		String reqURL = "https://kapi.kakao.com/v1/user/logout";
 	    try {
-	        URL url = new URL(reqURL);
+	        System.out.println(access_token);
+	    	URL url = new URL(reqURL);
 	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 	        conn.setRequestMethod("POST");
-	        conn.setRequestProperty("Authorization", "Bearer " + access_Token);
+	        conn.setRequestProperty("Authorization", "Bearer " + access_token);
 	        
 	        int responseCode = conn.getResponseCode();
-	        System.out.println("responseCode : " + responseCode);
+	        System.out.println("logout responseCode : " + responseCode);
 	        
 	        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 	        
