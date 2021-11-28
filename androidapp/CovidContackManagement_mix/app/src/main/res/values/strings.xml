@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">CovidContackManagement</string>
+    <string name="start_error_prefix" />
+    <string name="start_error_already_started" />
+    <string name="start_error_too_large" />
+    <string name="start_error_unsupported" />
+    <string name="start_error_internal" />
+    <string name="start_error_unknown" />
+    <string name="advertising_timedout" />
+    <string name="start_error_too_many" />
+    <string name="bt_null" />
+    <string name="seconds_ago" />
+    <string name="just_now" />
+    <string name="minute_ago" />
+    <string name="minutes_ago" />
+    <string name="hour_ago" />
+    <string name="hours_ago" />
+    <string name="last_seen" />
+    <string name="no_name" />
+    <string name="empty_list" />
+    <string name="scan_start_toast" />
+    <string name="seconds" />
+    <string name="already_scanning" />
+    <string name="bt_not_supported" />
+    <string name="bt_ads_not_supported" />
+    <string name="bt_not_enabled_leaving" />
+    <string name="broadcast_device" />
+    <string name="refresh" />
+</resources>
