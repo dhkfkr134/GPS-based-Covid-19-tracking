@@ -48,18 +48,23 @@ public class UserProfileController {
         userProfile.setId(kakao.getUserInfo(userInfo.get("access_token")));
         System.out.println("login Controller : " + userProfile);
         UserProfile temp=mapper.getUserProfile(userProfile.getId());
-        if(temp.getId().equals(""))
+        if(temp==null)
         	mapper.insertUserProfile(userProfile.getId(), userProfile.getAccess_token(),
         			userProfile.getRefresh_token(), userProfile.getCode());
         else
         	mapper.updateUserProfile(userProfile.getId(), userProfile.getAccess_token(),
         			userProfile.getRefresh_token(), userProfile.getCode());   
+
     }
     
     @GetMapping("/token")
     public String token(@RequestParam("code") String code) {
-    	UserProfile userProfile=mapper.getUserToken(code); 
-    	return userProfile.getId()+"/"+userProfile.getAccess_token()+"/"+userProfile.getRefresh_token();
+    	UserProfile userProfile=mapper.getUserToken(code);
+    	if(userProfile==null) {
+    		return "failed";
+    	}else {
+    		return userProfile.getId()+"/"+userProfile.getAccess_token()+"/"+userProfile.getRefresh_token();
+    	}
     }
     
     @GetMapping("/access")

@@ -36,7 +36,7 @@ public class UserLocationController {
 	}
 	
 	@GetMapping("/infection/{id}")
-	public List<Integer> getUserIdLocation(@PathVariable("id") Integer id) {
+	public List<Integer> getUserIdLocation(@PathVariable("id") String id) {
 		List<Integer> uid_List = new ArrayList<>();
 		List<InfectionLoc> mcode_list;
 		mcode_list = mapper.getUidLocation(id);
@@ -73,7 +73,7 @@ public class UserLocationController {
 			
 			Date it = fm.parse(lvo.getInTime());
 			Date ot = fm.parse(lvo.getOutTime());
-			mapper.putUserIdLocation(lvo.getId(), lvo.getMcode(), lvo.getLoc(), it,ot);
+			mapper.putUserIdLocation(lvo.getId(), lvo.getMcode(), lvo.getLoc(), it,ot,lvo.getAddress());
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -89,7 +89,7 @@ public class UserLocationController {
 			cal.setTime(it);
 			cal.add(Calendar.HOUR,+2);
 			Date ot=cal.getTime();
-			mapper.putUserIdLocation(bvo.getId(), "", mapper.gethostIdLocation(bvo.getHostID()), it, ot);
+			mapper.putUserIdLocation(bvo.getId(), "","", it, ot,mapper.gethostIdLocation(bvo.getHostID()));
 		}catch(Exception e) {
 			System.out.println(e);
 		}
