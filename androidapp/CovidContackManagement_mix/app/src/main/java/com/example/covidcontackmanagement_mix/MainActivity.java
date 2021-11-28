@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private Button button1;
     private TextView txtResult;
     private TextView txtResult2;
-    private int gps_num = 10;
+    private int gps_num = 300;
     private double[] longtitudeSet = new double[gps_num];
     private double[] latitudeSet = new double[gps_num];
     private double latitudeMedian;
@@ -119,7 +119,12 @@ public class MainActivity extends AppCompatActivity {
 
         //블루투스끝
 
-        //포그라운드시작
+        //블루투스 포그라운드시작
+
+        Intent serviceIntent1 = new Intent(this, bltScanService.class);
+        //startService(serviceIntent1);
+
+        //gps 포그라운드시작
 
         Intent serviceIntent = new Intent(this, MyService.class);
         startService(serviceIntent);

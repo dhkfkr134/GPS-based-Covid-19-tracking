@@ -26,4 +26,5 @@
     <string name="bt_not_enabled_leaving" />
     <string name="broadcast_device" />
     <string name="refresh" />
+    <string name="ble_not_supported" />
 </resources>

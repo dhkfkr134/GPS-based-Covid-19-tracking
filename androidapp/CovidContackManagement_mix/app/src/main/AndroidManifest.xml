@@ -22,18 +22,25 @@
         </activity>
 
         <service
-            android:name=".MyService"
+            android:name=".bltScanService"
+
             android:enabled="true"
+            android:foregroundServiceType="location"
             android:exported="true"></service>
 
+        <service
+            android:name=".MyService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="location" />
         <service android:name=".AdvertiserService" />
     </application>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
 </manifest>
