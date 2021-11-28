@@ -16,29 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.covid.mapper.UserProfileMapper;
 import com.project.covid.model.UserProfile;
-import com.project.covid.service.KakaoAPI;
+import com.project.covid.service.UserProfileService;
 
 
 @RestController
 @RequestMapping(value="/kakao")
 public class UserProfileController {
 
-	public UserProfileController(UserProfileMapper mapper) {
-		this.mapper = mapper;
-	}
-	
-	
-	@GetMapping("/user/{id}")
-	public UserProfile getUserProfile(@PathVariable("id") String id) {
-		UserProfile u=mapper.getUserProfile(id);
-		System.out.println(u.toString());
-		return u;
-		
-	}
-
-	
 	@Autowired
-    private KakaoAPI kakao;
+    private UserProfileService kakao;
 	
 	@Autowired
 	private UserProfileMapper mapper;
@@ -62,18 +48,23 @@ public class UserProfileController {
         userProfile.setId(kakao.getUserInfo(userInfo.get("access_token")));
         System.out.println("login Controller : " + userProfile);
         UserProfile temp=mapper.getUserProfile(userProfile.getId());
-        if(temp.getId().equals(""))
+        if(temp==null)
         	mapper.insertUserProfile(userProfile.getId(), userProfile.getAccess_token(),
         			userProfile.getRefresh_token(), userProfile.getCode());
         else
         	mapper.updateUserProfile(userProfile.getId(), userProfile.getAccess_token(),
         			userProfile.getRefresh_token(), userProfile.getCode());   
+
     }
     
     @GetMapping("/token")
     public String token(@RequestParam("code") String code) {
     	UserProfile userProfile=mapper.getUserToken(code);
-    	return userProfile.getAccess_token()+"/"+userProfile.getRefresh_token();
+    	if(userProfile==null) {
+    		return "failed";
+    	}else {
+    		return userProfile.getId()+"/"+userProfile.getAccess_token()+"/"+userProfile.getRefresh_token();
+    	}
     }
     
     @GetMapping("/access")
@@ -100,8 +91,15 @@ public class UserProfileController {
     }
     
     @GetMapping("/logout")
-    public void logout(@RequestParam("access_token") String access_token) {
+    public void logout(@RequestParam("id") String id, @RequestParam("access_token") String access_token) {
+    	String empty="";
     	kakao.logout(access_token);
+    	mapper.logout(id, empty);
+    }
+    
+    @GetMapping("/test")
+    public void test(@RequestParam("id") String id) {
+    	kakao.sendMessage(id);
     }
 }
 

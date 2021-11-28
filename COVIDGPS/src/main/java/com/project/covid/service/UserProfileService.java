@@ -17,7 +17,7 @@ import com.google.gson.JsonParser;
 
 
 @Service
-public class KakaoAPI {
+public class UserProfileService {
 
 	public HashMap<String, String> getAccessToken(String authorize_code) {
 
@@ -82,6 +82,7 @@ public class KakaoAPI {
 	}
 	
 	public String access(String access_token) {
+		System.out.println("access");
 		String reqURL = "https://kapi.kakao.com/v2/user/me";
 		int responseCode=0;
 		try {
@@ -93,7 +94,7 @@ public class KakaoAPI {
 			conn.setRequestProperty("Authorization", "Bearer " + access_token);
 
 			 responseCode= conn.getResponseCode();
-			
+			System.out.println("access response : "+responseCode);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -125,7 +126,7 @@ public class KakaoAPI {
 
 			// 결과 코드가 200이라면 성공
 			int responseCode = conn.getResponseCode();
-			System.out.println("responseCode : " + responseCode);
+			System.out.println("refresh response : " + responseCode);
 
 			// 요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -198,16 +199,17 @@ public class KakaoAPI {
 		return id;
 	}
 
-	public void logout(String access_Token) {
+	public void logout(String access_token) {
 		String reqURL = "https://kapi.kakao.com/v1/user/logout";
 	    try {
-	        URL url = new URL(reqURL);
+	        System.out.println(access_token);
+	    	URL url = new URL(reqURL);
 	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 	        conn.setRequestMethod("POST");
-	        conn.setRequestProperty("Authorization", "Bearer " + access_Token);
+	        conn.setRequestProperty("Authorization", "Bearer " + access_token);
 	        
 	        int responseCode = conn.getResponseCode();
-	        System.out.println("responseCode : " + responseCode);
+	        System.out.println("logout responseCode : " + responseCode);
 	        
 	        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 	        
@@ -222,5 +224,36 @@ public class KakaoAPI {
 	        // TODO Auto-generated catch block
 	        e.printStackTrace();
 	    }
+	}
+	
+	public void sendMessage(String access_token) {
+		String reqURL = "https://kapi.kakao.com//v2/api/talk/memo/default/send";
+		try {
+			URL url = new URL(reqURL);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("POST");
+
+			// 요청에 필요한 Header에 포함될 내용
+			conn.setRequestProperty("Authorization", "Bearer " + access_token);
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+			JsonObject o=new JsonObject();
+			JsonObject obj=new JsonObject();
+			obj.addProperty("object_type", "text");
+			obj.addProperty("image_url", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJq1hDW8VzhXJ0G0QL8ER720BtWKuWvLNIsw&usqp=CAU");
+			obj.addProperty("image_width", "80");
+			obj.addProperty("image_height","80");
+			obj.addProperty("text","코로나 확진자와 접촉 의심 됩니다. 가까운 보건소나 병원에서 코로나 검사 받길 권장드립니다.");
+			o.addProperty("template_object", obj.toString());
+			bw.write(o.toString());
+			bw.flush();
+			
+			int responseCode = conn.getResponseCode();
+			System.out.println("responseCode : " + responseCode);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }

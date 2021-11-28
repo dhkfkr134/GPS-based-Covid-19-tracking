@@ -1,6 +1,7 @@
 package com.project.covid.model;
 
 public class UserProfile {
+	
 	String id="";
 	String access_token="";
 	String refresh_token="";
@@ -13,9 +14,11 @@ public class UserProfile {
 	public String getId() {
 		return id;
 	}
+	
 	public void setId(String id) {
 		this.id = id;
 	}
+	
 	public String getAccess_token() {
 		return access_token;
 	}

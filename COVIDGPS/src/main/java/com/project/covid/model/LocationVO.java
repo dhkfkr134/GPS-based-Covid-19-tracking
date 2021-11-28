@@ -3,16 +3,16 @@ package com.project.covid.model;
 import java.sql.Date;
 
 public class LocationVO {
-	private int id;
+	private String id;
 	private String mcode;
 	private String loc;
 	private String inTime;
 	private String outTime;
 	private String address;
-	public int getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getMcode() {
@@ -45,7 +45,7 @@ public class LocationVO {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public LocationVO(int id, String mcode, String loc, String inTime, String outTime, String address) {
+	public LocationVO(String id, String mcode, String loc, String inTime, String outTime, String address) {
 		super();
 		this.id = id;
 		this.mcode = mcode;
@@ -54,5 +54,6 @@ public class LocationVO {
 		this.outTime = outTime;
 		this.address = address;
 	}
+	
 	
 }
