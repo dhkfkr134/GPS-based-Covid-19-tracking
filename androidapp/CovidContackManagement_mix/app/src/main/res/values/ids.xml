@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="advertise_switch" type="id" />
+    <item name="last_seen" type="id" />
+    <item name="device_address" type="id" />
+    <item name="device_name" type="id" />
+    <item name="refresh" type="id" />
+    <item name="scanner_fragment_container" type="id" />
+    <item name="advertiser_fragment_container" type="id" />
+    <item name="error_textview" type="id" />
+</resources>
