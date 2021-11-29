@@ -8,10 +8,30 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/button1"
-        android:text="내 위치정보 가져오기"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:id="@+id/button3"
+        android:layout_width="800px"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="GPS끄기" />
+
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@android:color/transparent"
+        android:layout_marginTop="10px"
+        app:srcCompat="@drawable/kakao_login_medium_wide" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="800px"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:text="로그아웃"/>
+
 
     <TextView
         android:id="@+id/txtResult"

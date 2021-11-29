@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +39,14 @@ import okhttp3.ResponseBody;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button button1;
+    //
+    private Button button2, button3;
+    private ImageButton imageButton;
+    private String test2;
+    private String access_token=null;
+    private String refresh_token=null;
+    private String userID;
+    //
     private TextView txtResult;
     private TextView txtResult2;
     private int gps_num = 300;
@@ -61,7 +69,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        button1 = (Button)findViewById(R.id.button1);
+
+        button3 = (Button) findViewById(R.id.button3);
+        button2 = (Button) findViewById(R.id.button2);
+        imageButton = (ImageButton) findViewById(R.id.imageButton);
         txtResult = (TextView)findViewById(R.id.txtResult);
         txtResult2 = (TextView)findViewById(R.id.txtResult2);
         Requests request = new Requests("http://115.21.52.248:8080/location/GPS");
@@ -135,192 +146,41 @@ public class MainActivity extends AppCompatActivity {
 
         final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        button1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if ( Build.VERSION.SDK_INT >= 23 &&
-                        ContextCompat.checkSelfPermission( getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-                    ActivityCompat.requestPermissions( MainActivity.this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
-                            0 );
+
+
+
+
+    }
+    //로그인 요청
+    public String confirmAT(){
+        System.out.println("test10 : ");
+        OkHttpClient client = new OkHttpClient();
+        try{
+            String url="http://115.21.52.248:8080/kakao/access?access_token="+access_token;
+            Request.Builder builder=new Request.Builder().url(url).get();
+            Request request= builder.build();
+            Response response= client.newCall(request).execute();
+
+            if(response.body().string().equals("200")){
+                ResponseBody body=response.body();
+                if(body!=null){
+                    System.out.println("body!=null");
+                }else{
+                    System.out.println("정보없음!");
                 }
-                else{
-                    Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    String provider = location.getProvider();
-                    double longitude = location.getLongitude();
-                    double latitude = location.getLatitude();
-                    double altitude = location.getAltitude();
-
-                    txtResult.setText("위치정보 : " + provider + "\n" +
-                            "위도 : " + latitude + "\n" +
-                            "경도 : " + longitude + "\n" +
-                            "고도  : " + altitude);
-                    //System.out.println(longitude);
-
-                    lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                            1000,
-                            0,
-                            gpsLocationListener);
-                    lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                            1000,
-                            0,
-                            gpsLocationListener);
-
-
-
-
-                    //gps처리 thread
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            while (true) {
-
-
-
-                                //gps가져오기
-                                if ( Build.VERSION.SDK_INT >= 23 &&
-                                        ContextCompat.checkSelfPermission( getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-                                    ActivityCompat.requestPermissions( MainActivity.this, new String[] {  Manifest.permission.ACCESS_FINE_LOCATION  },
-                                            0 );
-                                }
-                                else {
-                                    Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                                    String provider = location.getProvider();
-                                    double longitude = location.getLongitude();
-                                    double latitude = location.getLatitude();
-                                    double altitude = location.getAltitude();
-
-
-
-                                    //stay move파악하기
-                                    System.out.println(provider  + "   " + latitude + "   " + longitude);
-
-                                    longtitudeSet[sequence] = longitude;
-                                    latitudeSet[sequence] = latitude;
-
-
-                                    if(sequence == gps_num-1){
-
-                                        float[] roundedLongatitudeSet = new float[gps_num];
-                                        float[] roundedlatitudeSet = new float[gps_num];
-                                        int i = 0;
-                                        for(i = 0; i<gps_num; i++ ){
-                                            roundedLongatitudeSet[i] =  Float.parseFloat(String.format("%.4f", longtitudeSet[i]));
-                                            roundedlatitudeSet[i] =  Float.parseFloat(String.format("%.4f", latitudeSet[i]));
-                                        }
-                                        float latitudeModeRatio = modeRatio(roundedlatitudeSet);
-                                        float longtitudeModeRatio = modeRatio(roundedLongatitudeSet);
-
-                                        //move
-                                        if( latitudeModeRatio < 0.5 && longtitudeModeRatio < 0.5){
-                                            System.out.println("ratio: " + latitudeModeRatio + " " + longtitudeModeRatio );
-                                            //머무르다가 이동할경우 서버로 stay송신
-                                            if(isMove == false){
-
-                                                //머물기끝
-                                                long now = System.currentTimeMillis();
-                                                Date date = new Date(now);
-                                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                                outtime = sdf.format(date);
-
-                                                //서버로 전송
-                                                System.out.println("stay -> move before: " + beforeLocation);
-                                                request.postData(1, mugunghwa, gpsString, intime, outtime,"");
-
-                                            }
-
-                                            isMove = true;
-
-                                        }
-                                        //stay
-                                        else{
-                                            //위경도 평균
-                                            latitudeMedian = getMedian(latitudeSet);
-                                            longtitudeMedian = getMedian(longtitudeSet);
-                                            System.out.println(latitudeMedian + " " + longtitudeMedian);
-
-                                            //무궁화코드로변환
-                                            List<String> dmsArr = gpsToDMS(latitudeMedian, longtitudeMedian);
-                                            System.out.println("dms: "+dmsArr);
-                                            String presentLocation = getGpsMgh(dmsArr.get(4));
-
-
-                                            //머무르는 장소가바뀐경우 서버로전송 같은경우로테스트중
-                                            if(beforeLocation.equals(presentLocation) == false) {
-                                            }
-                                            else{
-                                                //머물기끝
-                                                long now = System.currentTimeMillis();
-                                                Date date = new Date(now);
-                                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                                outtime = sdf.format(date);
-
-                                                System.out.println(mugunghwa +" " + gpsString + " " + intime + " " + outtime);
-                                                request.postData(1, mugunghwa, gpsString, intime, outtime, "");
-
-                                                //머물기시작
-                                                now = System.currentTimeMillis();
-                                                date = new Date(now);
-                                                sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                                intime = sdf.format(date);
-                                                mugunghwa = dmsArrTomugunghwas(dmsArr);
-                                                gpsString = latitudeMedian + " " + longtitudeMedian;
-
-
-                                            }
-
-                                            if(isMove == true){
-                                                System.out.println("ismove : "+ isMove);
-                                                //머물기시작
-                                                long now2 = System.currentTimeMillis();
-                                                Date date2 = new Date(now2);
-                                                SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                                intime = sdf2.format(date2);
-                                                mugunghwa = dmsArrTomugunghwas(dmsArr);
-                                                gpsString = latitudeMedian + " " + longtitudeMedian;
-                                            }
-
-
-
-                                            beforeLocation = presentLocation;
-
-                                            isMove = false;
-
-                                        }
-
-
-                                        sequence = 0;
-                                    }
-                                    else{
-                                        sequence++;
-                                    }
-                                    //stay move파악끝
-
-                                    //보내기. stay일 경우 서버로 보내기.
-                                }
-
-
-
-
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }).start();
-                    //thread끝
-
-
-                }
-
-
+                return "";
             }
-        });
-
-
-
-
+            else{
+                url="http://115.21.52.248:8080/kakao/refresh?refresh_token="+refresh_token;
+                builder=new Request.Builder().url(url).get();
+                request=builder.build();
+                response=client.newCall(request).execute();
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        //access_token=null;
+        return "";
     }
     final LocationListener gpsLocationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
@@ -703,57 +563,84 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //서버로 stay정보 보내는 함수
-    public class Requests {
-        protected String mURL;
 
-        public Requests(String url) {
-            mURL = url;
-        }
-
-        //post
-        public boolean postData(int userId, String mugunghwa,String gpsString ,String inTime, String outTime, String address){
-            OkHttpClient client = new OkHttpClient();
-            try{
-                RequestBody formBody=new FormBody.Builder()
-                        .add("id",Integer.toString(userId))
-                        .add("mcode",mugunghwa)
-                        .add("loc",gpsString)
-                        .add("inTime",inTime)
-                        .add("outTime",outTime)
-                        .add("address", address)
-                        .build();
-                Request request=new Request.Builder()
-                        .url(mURL)
-                        .post(formBody)
-                        .build();
-                Response response=client.newCall(request).execute();
+    @Override
+    protected void onResume(){
+        super.onResume();
 
 
-
-                //post요청에서 body확인필요없겠지?
-                if(response.isSuccessful()){
-                    ResponseBody body=response.body();
-                    System.out.println(body.string());
-                    if(body!=null){
-                        System.out.println(body.string());
-                    }else{
-                        System.out.println("Error");
-                    }
+        if(access_token==null) {
+            new Thread() {
+                public void run() {
+                    test2 = new Requests("http://115.21.52.248:8080/kakao/connect").getLoginUrl();
                 }
-                return true;
-            }catch(Exception e){
-                System.out.println("Exception");
-            }
-            return false;
+            }.start();
+            imageButton.setVisibility(View.VISIBLE);
+            //버튼 클릭리스너
+            System.out.println("onResume login : ");
+            imageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.println("onResume login : " + access_token);
+                    new Thread() {
+                        public void run() {
+                            test2 = new Requests("http://115.21.52.248:8080/kakao/connect").getLoginUrl();
+                        }
+                    }.start();
+
+                    Intent intent = new Intent(getApplicationContext(), WebViewPage.class);
+                    intent.putExtra("my_data", test2);
+
+                    System.out.println("onResume 로그인버튼 클릭 : " + test2);
+                    // 로그인하고나면 로그아웃만 생기게
+                    imageButton.setVisibility(View.GONE);
+                    button2.setVisibility(View.VISIBLE);
+                    startActivityForResult(intent, 100);
+                }
+            });
+        }else {
+            new Thread() {
+                public void run() {
+                    test2 = new Requests("http://115.21.52.248:8080/kakao/logout?id=").kakaoLogout(userID, access_token);
+                }
+            }.start();
+            System.out.println("onResume logout  : " + access_token);
+            imageButton.setVisibility(View.GONE);
+            button2.setVisibility(View.VISIBLE);
+            button2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //access_token 해제하는 코드
+                    new Thread() {
+                        public void run() {
+                            confirmAT();
+                            test2 = new Requests("http://115.21.52.248:8080/kakao/logout?id=").kakaoLogout(userID, access_token);
+                            access_token=null;
+                        }
+                    }.start();
+
+                    Intent intent = new Intent(getApplicationContext(), WebViewPage.class);
+                    intent.putExtra("my_data", test2);
+
+                    System.out.println("onResume 로그아웃버튼 클릭 : " + test2);
+                    // 로그아웃하고나면 로그인만 생기게
+                    imageButton.setVisibility(View.VISIBLE);
+                    button2.setVisibility(View.GONE);
+                    startActivityForResult(intent, 200);
+
+                }
+            });
         }
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //gps잠금 버튼
+
+            }
+        });
 
     }
-
-
     //블루투스 함수 시작
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -781,7 +668,18 @@ public class MainActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                     finish();
                 }
-
+                break;
+            case 100:
+                access_token = data.getStringExtra("access_token");
+                refresh_token = data.getStringExtra("refresh_token");
+                userID = data.getStringExtra("userID");
+                System.out.println("get Activity result: " + access_token + " " + refresh_token + " "+userID);
+                break;
+            case 200:
+                access_token = data.getStringExtra("access_token");
+                refresh_token = data.getStringExtra("refresh_token");
+                userID = data.getStringExtra("userID");
+                break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }
