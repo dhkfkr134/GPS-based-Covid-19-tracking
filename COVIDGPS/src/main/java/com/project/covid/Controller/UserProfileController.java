@@ -90,11 +90,17 @@ public class UserProfileController {
         return userInfo.get("access_code")+"/"+userInfo.get("refresh_token");
     }
     
+    @GetMapping("/logout/check")
+    public void logoutCheck() {
+    	System.out.println("Logout Success");
+    }
     @GetMapping("/logout")
-    public void logout(@RequestParam("id") String id, @RequestParam("access_token") String access_token) {
+    public String logout(@RequestParam("id") String id, @RequestParam("access_token") String access_token) {
     	String empty="";
     	kakao.logout(access_token);
     	mapper.logout(id, empty);
+    	return "https://kauth.kakao.com/oauth/logout?client_id=c8f72fe8e065caa66728ff40de53d9fd"
+    			+ "&logout_redirect_uri=http://115.21.52.248:8080/kakao/logout/check";
     }
     
     @GetMapping("/test")
