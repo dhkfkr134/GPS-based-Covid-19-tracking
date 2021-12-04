@@ -90,6 +90,16 @@ public class MybltScanService extends Service {
         return START_NOT_STICKY;
     }
 
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        mBluetoothLeScanner.stopScan(mScanCallback);
+
+    }
+
+
+
     private List<ScanFilter> buildScanFilters() {
         List<ScanFilter> scanFilters = new ArrayList<>();
 

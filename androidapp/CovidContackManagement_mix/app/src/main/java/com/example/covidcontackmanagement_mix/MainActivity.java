@@ -626,7 +626,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "체크상태 = " + isChecked, Toast.LENGTH_SHORT).show();
 
                     if(isChecked == true){
-
+                        locationStorageService.putExtra("userID", userID);
                         startService(locationStorageService);
 
                     }

@@ -46,7 +46,7 @@ public class MylocationStorageService extends Service {
     private double[] latitudeSet = new double[gps_num];
     private double latitudeMedian;
     private double longtitudeMedian;
-    private String userID = "2009927521";
+    private String userID = "01";
     private String intime;
     private String outtime;
     private String mugunghwa;
@@ -57,6 +57,7 @@ public class MylocationStorageService extends Service {
     private OkHttpClient client = new OkHttpClient();
 
     private BluetoothAdapter mBluetoothAdapter;
+    private Thread gpsThread;
 
     public MylocationStorageService() {
     }
@@ -71,6 +72,10 @@ public class MylocationStorageService extends Service {
     @SuppressLint("WrongConstant")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        System.out.println("before:" + userID);
+        userID = intent.getStringExtra("userID");
+        System.out.println("fix:" + userID);
 
         //bluetooth foreground start
         // Initializes Bluetooth adapter.
@@ -145,11 +150,14 @@ public class MylocationStorageService extends Service {
 
 
         //gps처리 thread
-        new Thread(new Runnable() {
+        gpsThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
 
+                    if(Thread.interrupted()) {
+                        break;
+                    }
 
 
                     //gps가져오기
@@ -299,10 +307,14 @@ public class MylocationStorageService extends Service {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                        break;
                     }
+
+
                 }
             }
-        }).start();
+        });
+        gpsThread.start();
         //thread끝
 
 
@@ -312,6 +324,22 @@ public class MylocationStorageService extends Service {
 
 
         return START_NOT_STICKY;
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+
+        try {
+            gpsThread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        gpsThread.interrupt();
+
+
+
     }
 
     final LocationListener gpsLocationListener = new LocationListener() {
