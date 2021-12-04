@@ -237,10 +237,10 @@ public class MylocationStorageService extends Service {
                             String presentLocation = getGpsMgh(dmsArr.get(4));
 
                             //머물기 끝시간 계산
-                            long now = System.currentTimeMillis();
-                            Date date = new Date(now);
+                            long now ;
+                            Date date ;
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            outtime = sdf.format(date);
+
 
                             //장소 변경한경우 서버로 전달
                             if(beforeLocation.equals(presentLocation) == false && isMove == false) {
@@ -258,14 +258,16 @@ public class MylocationStorageService extends Service {
                                 cal.setTime(date);
                                 cal.add(Calendar.MINUTE, -5);
 
-                                sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
                                 intime = sdf.format(cal.getTime());
                                 mugunghwa = dmsArrTomugunghwas(dmsArr);
                                 gpsString = latitudeMedian + " " + longtitudeMedian;
                             }
 
+
+
                             //새로운 장소 stay시작한경우 변수들 갱신
-                            if(beforeLocation.equals(presentLocation) == false){
+                            if(!beforeLocation.equals(presentLocation)){
 
                                 //머물기 시작시간계산
                                 now = System.currentTimeMillis();
@@ -275,12 +277,16 @@ public class MylocationStorageService extends Service {
                                 cal.setTime(date);
                                 cal.add(Calendar.MINUTE, -5);
 
-                                sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
                                 intime = sdf.format(cal.getTime());
                                 mugunghwa = dmsArrTomugunghwas(dmsArr);
                                 gpsString = latitudeMedian + " " + longtitudeMedian;
                             }
 
+                            //머물기 끝시간 계산
+                            now = System.currentTimeMillis();
+                            date = new Date(now);
+                            outtime = sdf.format(date);
 
 
                             beforeLocation = presentLocation;
