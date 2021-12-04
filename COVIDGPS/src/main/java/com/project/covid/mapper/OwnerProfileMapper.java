@@ -16,6 +16,9 @@ public interface OwnerProfileMapper {
 	@Select("SELECT * FROM OwnerProfile WHERE code=#{code}")
 	OwnerProfile getOwnerToken(@Param("code")String code);
 	
+	@Select("SELECT hostID FROM UserProfile WHERE refresh_token=#{refresh_token}")
+	String getOwnerId(@Param("refresh_token") String refresh_token);
+	
 	@Insert("INSERT OwnerProfile VALUES(#{hostID},#{access_token},#{refresh_token},#{code}, #{loc})")
 	int insertOwnerProfile(@Param("hostID")String hostID, @Param("access_token") String access_token,
 			@Param("refresh_token") String refresh_token, @Param("code") String code,
