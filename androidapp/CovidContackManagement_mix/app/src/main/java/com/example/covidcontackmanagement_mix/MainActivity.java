@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private int hostOrUser=-1;
     private boolean globalLocationChecked=false;
     private boolean globalBluetoothChecked=false;
+    private boolean globalAdvertiserChecked=false;
     //
     private int gps_num = 300;
     private double[] longtitudeSet = new double[gps_num];
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter mBluetoothAdapter;
     private Intent bltScanService;
     private Intent locationStorageService;
-    private AdvertiserFragment advertiserFragment ;//= new AdvertiserFragment();
+    private AdvertiserFragment advertiserFragment=null ;//= new AdvertiserFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -539,6 +540,10 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("userid2: " + userID);
 
         restoreState();
+        if(advertiserFragment==null) {
+            System.out.println("ad null");
+            advertiserFragment = new AdvertiserFragment();
+        }
         if(access_token!=null&&hostOrUser==0)
             advertiserFragment.inputUserID(userID);
         if(hostOrUser==0) {
@@ -584,10 +589,10 @@ public class MainActivity extends AppCompatActivity {
                     if (mBluetoothAdapter.isMultipleAdvertisementSupported()) {
 
                         // Everything is supported and enabled, load the fragments.
-//                        if(hostOrUser==0) {
-//
-//                            setupFragments();
-//                        }
+                        if(hostOrUser==0) {
+
+                            setupFragments();
+                        }
 
                     } else {
 
@@ -682,7 +687,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         System.out.println("onResume login : " + access_token);
                         if(hostOrUser==0) {
-                            advertiserFragment = new AdvertiserFragment();
+                            //advertiserFragment = new AdvertiserFragment();
                             setupFragments();
                         }
                         new Thread() {
@@ -900,6 +905,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("access_token",access_token);
         editor.putBoolean("globalLocationChecked",globalLocationChecked);
         editor.putBoolean("globalBluetoothChecked",globalBluetoothChecked);
+        editor.putBoolean("globalAdvertiserChecked",globalAdvertiserChecked);
         editor.putInt("hostOrUser",hostOrUser);
         editor.commit();
     }
@@ -916,6 +922,9 @@ public class MainActivity extends AppCompatActivity {
         }
         if((pref!=null)&&(pref.contains("globalBluetoothChecked"))){
             globalBluetoothChecked = pref.getBoolean("globalBluetoothChecked",false);
+        }
+        if((pref!=null)&&(pref.contains("globalAdvertiserChecked"))){
+            globalAdvertiserChecked = pref.getBoolean("globalAdvertiserChecked",false);
         }
         if((pref!=null)&&(pref.contains("hostOrUser"))){
             hostOrUser = pref.getInt("hostOrUser",-1);

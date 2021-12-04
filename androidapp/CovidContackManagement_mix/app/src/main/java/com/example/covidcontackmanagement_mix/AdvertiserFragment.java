@@ -184,6 +184,11 @@ public class AdvertiserFragment extends Fragment implements View.OnClickListener
         c.stopService(getServiceIntent(c));
         mSwitch.setChecked(false);
     }
+    public void restoreChecked(boolean checked){
+        Context c = getActivity();
+        c.stopService(getServiceIntent(c));
+        mSwitch.setChecked(checked);
+    }
 
     public void inputUserID(String userID){
         this.userID = userID;
