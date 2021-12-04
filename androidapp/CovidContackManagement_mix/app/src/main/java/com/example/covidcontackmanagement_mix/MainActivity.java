@@ -705,7 +705,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "체크상태 = " + isChecked, Toast.LENGTH_SHORT).show();
 
                 if(isChecked == true){
-
+                    bltScanService.putExtra("userID", userID);
                     startService(bltScanService);
 
                 }

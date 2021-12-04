@@ -40,6 +40,9 @@ public class MybltScanService extends Service {
     private Date date;
     private SimpleDateFormat sdf;
 
+    private Requests requests = new Requests("http://115.21.52.248:8080/location/bluetooth");
+
+
     public MybltScanService() {
     }
 
@@ -173,8 +176,10 @@ public class MybltScanService extends Service {
 
 
                     //서버로데이터보내기
+                    System.out.println("dataset: " +userID +" pre: " +presentLocation +"intime: "+ intime);
+                    requests.postBluetooth(userID, presentLocation, intime );
 
-
+                    //이전장소로저장
                     beforeLocation = presentLocation;
 
                 }
