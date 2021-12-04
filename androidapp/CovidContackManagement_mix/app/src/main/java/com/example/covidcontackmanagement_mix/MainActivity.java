@@ -18,7 +18,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     //
     private Button button2, button3;
     private ImageButton imageButton;
+    private Switch storageLocationSwitch;
+    private Switch bluetoothSwitch;
     private String test2;
     private String access_token=null;
     private String refresh_token=null;
@@ -59,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
     private OkHttpClient client=new OkHttpClient();
 
     private BluetoothAdapter mBluetoothAdapter;
+    Intent bltScanService;
+    Intent locationStorageService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,12 +73,19 @@ public class MainActivity extends AppCompatActivity {
 
         button3 = (Button) findViewById(R.id.button3);
         button2 = (Button) findViewById(R.id.button2);
+
+
         imageButton = (ImageButton) findViewById(R.id.imageButton);
         txtResult = (TextView)findViewById(R.id.txtResult);
         txtResult2 = (TextView)findViewById(R.id.txtResult2);
         Requests request = new Requests("http://115.21.52.248:8080/location/GPS");
 
-        MediaPlayer player = MediaPlayer.create(this, R.raw.beep);
+        storageLocationSwitch = (Switch)findViewById(R.id.storageLocationSwitch);
+        bluetoothSwitch = (Switch)findViewById(R.id.bluetoothSwitch);
+
+
+
+        //MediaPlayer player = MediaPlayer.create(this, R.raw.beep);
         //player.start();
 
 
@@ -130,13 +143,15 @@ public class MainActivity extends AppCompatActivity {
         //블루투스 스캐너 포그라운드시작
 
 
-        Intent serviceIntent1 = new Intent(this, MybltScanService.class);
-        startService(serviceIntent1);
+        bltScanService = new Intent(this, MybltScanService.class);
+        //startService(bltScanService);
+
 
         //위치저장 포그라운드시작
 
-        Intent serviceIntent = new Intent(this, MylocationStorageService.class);
-        startService(serviceIntent);
+        locationStorageService = new Intent(this, MylocationStorageService.class);
+
+        //startService(locationStorageService);
 
         //포그라운드 끝
 
@@ -565,7 +580,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-
+        System.out.println("userid2: " + userID);
 
         if(access_token==null) {
             new Thread() {
@@ -595,7 +610,60 @@ public class MainActivity extends AppCompatActivity {
                     button2.setVisibility(View.VISIBLE);
                     startActivityForResult(intent, 100);
                 }
+
+
+
+
+
             });
+
+            //위치저장 껏다켜기
+            storageLocationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    // TODO Auto-generated method stub
+
+                    Toast.makeText(MainActivity.this, "체크상태 = " + isChecked, Toast.LENGTH_SHORT).show();
+
+                    if(isChecked == true){
+
+                        startService(locationStorageService);
+
+                    }
+                    else{
+                        stopService(locationStorageService);
+                    }
+
+                }
+            });
+
+            //블루투스 껏다켜기
+            bluetoothSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                @Override
+
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    // TODO Auto-generated method stub
+
+                    Toast.makeText(MainActivity.this, "체크상태 = " + isChecked, Toast.LENGTH_SHORT).show();
+
+                    if(isChecked == true){
+
+                        startService(bltScanService);
+
+                    }
+                    else{
+                        stopService(bltScanService);
+                    }
+
+                }
+            });
+
+
+
+
+
         }else {
             new Thread() {
                 public void run() {

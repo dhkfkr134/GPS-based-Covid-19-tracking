@@ -41,7 +41,7 @@ public class MylocationStorageService extends Service {
     private Button button1;
     private TextView txtResult;
     private TextView txtResult2;
-    private int gps_num = 10;
+    private int gps_num = 300;
     private double[] longtitudeSet = new double[gps_num];
     private double[] latitudeSet = new double[gps_num];
     private double latitudeMedian;
@@ -75,8 +75,7 @@ public class MylocationStorageService extends Service {
         //bluetooth foreground start
         // Initializes Bluetooth adapter.
 
-
-
+        //userid
 
         //gps foreground start
         Requests request = new Requests("http://115.21.52.248:8080/location/GPS");

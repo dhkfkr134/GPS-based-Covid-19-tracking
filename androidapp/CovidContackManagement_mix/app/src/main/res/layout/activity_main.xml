@@ -24,6 +24,7 @@
         android:layout_marginTop="10px"
         app:srcCompat="@drawable/kakao_login_medium_wide" />
 
+
     <Button
         android:id="@+id/button2"
         android:layout_width="800px"
@@ -43,6 +44,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView" />
+
+    <Switch
+        android:id="@+id/storageLocationSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:switchMinWidth="100dp"
+        android:switchPadding="20dp"
+        android:text="위치 저장"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+        android:id="@+id/bluetoothSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:switchMinWidth="100dp"
+        android:switchPadding="20dp"
+        android:text="블루투스 자동 체크인"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/storageLocationSwitch" />
+
 
     <FrameLayout
         android:id="@+id/scanner_fragment_container"
