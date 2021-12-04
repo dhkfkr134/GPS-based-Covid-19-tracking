@@ -64,7 +64,7 @@ public class AdvertiserService extends Service {
     /**
      * Length of time to allow advertising before automatically shutting off. (10 minutes)
      */
-    private long TIMEOUT = TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES);
+    private long TIMEOUT = TimeUnit.MILLISECONDS.convert(7, TimeUnit.DAYS);
 
     @Override
     public void onCreate() {
@@ -236,7 +236,6 @@ public class AdvertiserService extends Service {
         //내가 신호 값을 설정, 추가.
         /* For example - this will cause advertising to fail (exceeds size limit) */
         String signalData = userID; //일단 17바이트(17글짜까진 됨)
-        System.out.println("AdvertiserService : " +signalData);
         dataBuilder.addServiceData(Constants.Service_UUID, signalData.getBytes());
         //test
         System.out.println("확인해요" + signalData.getBytes());

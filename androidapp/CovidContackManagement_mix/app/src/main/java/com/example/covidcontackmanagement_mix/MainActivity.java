@@ -30,8 +30,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -88,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
         imageButton = (ImageButton) findViewById(R.id.imageButton);
         hostButton = (Button) findViewById(R.id.hostButton);
         userButton = (Button) findViewById(R.id.userButton);
-//        textView = (TextView) findViewById(R.id.textView);
-//        editTextView = (EditText) findViewById(R.id.editTextView);
+//       // textView = (TextView) findViewById(R.id.textView);
+//       // editTextView = (EditText) findViewById(R.id.editTextView);
 
         Requests request = new Requests("http://115.21.52.248:8080/location/GPS");
 
@@ -746,7 +744,7 @@ public class MainActivity extends AppCompatActivity {
                 // TODO Auto-generated method stub
 
                 if(isChecked == true){
-
+                    bltScanService.putExtra("userID", userID);
                     startService(bltScanService);
                     globalBluetoothChecked = isChecked;
                 }
