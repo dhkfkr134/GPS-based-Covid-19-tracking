@@ -177,7 +177,15 @@ public class MybltScanService extends Service {
 
                     //서버로데이터보내기
                     System.out.println("dataset: " +userID +" pre: " +presentLocation +"intime: "+ intime);
-                    requests.postBluetooth(userID, presentLocation, intime );
+
+                    new Thread(){
+                        @Override
+                        public void run() {
+                            super.run();
+                            requests.postBluetooth(userID, presentLocation, intime );
+                        }
+                    }.start();
+
 
                     //이전장소로저장
                     beforeLocation = presentLocation;
