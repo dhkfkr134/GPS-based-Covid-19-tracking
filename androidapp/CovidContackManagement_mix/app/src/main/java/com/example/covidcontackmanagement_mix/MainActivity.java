@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter mBluetoothAdapter;
     private Intent bltScanService;
     private Intent locationStorageService;
+    private AdvertiserFragment advertiserFragment ;//= new AdvertiserFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -540,6 +541,9 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("userid2: " + userID);
 
         restoreState();
+        if(access_token!=null)
+            advertiserFragment.inputUserID(userID);
+
         //블루투스 광고시작
         Context context = MainActivity.this;
 
@@ -565,10 +569,10 @@ public class MainActivity extends AppCompatActivity {
                     if (mBluetoothAdapter.isMultipleAdvertisementSupported()) {
 
                         // Everything is supported and enabled, load the fragments.
-                        if(hostOrUser==0) {
-
-                            setupFragments();
-                        }
+//                        if(hostOrUser==0) {
+//
+//                            setupFragments();
+//                        }
 
                     } else {
 
@@ -662,6 +666,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         System.out.println("onResume login : " + access_token);
+                        if(hostOrUser==0) {
+                            advertiserFragment = new AdvertiserFragment();
+                            setupFragments();
+                        }
                         new Thread() {
                             public void run() {
                                 test2 = new Requests("http://115.21.52.248:8080/kakao/connect").getLoginUrl();
@@ -827,7 +835,7 @@ public class MainActivity extends AppCompatActivity {
                 hostOrUser=-1;
                 userID=null;
                 removeFragments();
-
+                advertiserFragment.logoutAdvertising();
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
@@ -842,16 +850,16 @@ public class MainActivity extends AppCompatActivity {
         scannerFragment.setBluetoothAdapter(mBluetoothAdapter);
         transaction.replace(R.id.scanner_fragment_container, scannerFragment);
         */
-        AdvertiserFragment advertiserFragment = new AdvertiserFragment();
         transaction.replace(R.id.advertiser_fragment_container, advertiserFragment);
         transaction.commit();
     }
     private void removeFragments(){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        AdvertiserFragment advertiserFragment = new AdvertiserFragment();
+
         transaction.replace(R.id.advertiser_fragment_container, advertiserFragment);
         transaction.hide(advertiserFragment);
+        //transaction.remove(advertiserFragment);
         transaction.commit();
 
     }

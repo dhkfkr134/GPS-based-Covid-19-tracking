@@ -179,6 +179,11 @@ public class AdvertiserFragment extends Fragment implements View.OnClickListener
         c.stopService(getServiceIntent(c));
         mSwitch.setChecked(false);
     }
+    public void logoutAdvertising(){
+        Context c = getActivity();
+        c.stopService(getServiceIntent(c));
+        mSwitch.setChecked(false);
+    }
 
     public void inputUserID(String userID){
         this.userID = userID;
