@@ -610,19 +610,33 @@ public class MainActivity extends AppCompatActivity {
         hostButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                hostOrUser = 0;
-                userButton.setEnabled(false);
-                imageButton.setEnabled(true);
-                imageButton.setVisibility(View.VISIBLE);
+                if(hostOrUser==-1) {
+                    hostOrUser = 0;
+                    userButton.setEnabled(false);
+                    imageButton.setEnabled(true);
+                    imageButton.setVisibility(View.VISIBLE);
+                }
+                else if(hostOrUser==0){
+                    hostOrUser=-1;
+                    userButton.setEnabled(true);
+                    imageButton.setVisibility(View.GONE);
+                }
             }
         });
         userButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                hostOrUser = 1;
-                hostButton.setEnabled(false);
-                imageButton.setEnabled(true);
-                imageButton.setVisibility(View.VISIBLE);
+                if(hostOrUser==-1) {
+                    hostOrUser = 1;
+                    hostButton.setEnabled(false);
+                    imageButton.setEnabled(true);
+                    imageButton.setVisibility(View.VISIBLE);
+                }
+                else if(hostOrUser==1){
+                    hostOrUser=-1;
+                    hostButton.setEnabled(true);
+                    imageButton.setVisibility(View.GONE);
+                }
             }
         });
 
