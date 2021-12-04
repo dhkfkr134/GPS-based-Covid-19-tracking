@@ -3,12 +3,15 @@ package com.example.covidcontackmanagement_mix;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -16,9 +19,14 @@ import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,15 +43,22 @@ import okhttp3.ResponseBody;
 public class MainActivity extends AppCompatActivity {
 
     //
-    private Button button2, button3;
+    private Button button2;
+    private Button hostButton, userButton;
     private ImageButton imageButton;
+    private Switch storageLocationSwitch;
+    private Switch bluetoothSwitch;
+//    private TextView textView;
+//    private EditText editTextView;
     private String test2;
     private String access_token=null;
     private String refresh_token=null;
     private String userID;
+    private int hostOrUser=-1;
+    private boolean globalLocationChecked=false;
+    private boolean globalBluetoothChecked=false;
+    private boolean globalAdvertiserChecked=false;
     //
-    private TextView txtResult;
-    private TextView txtResult2;
     private int gps_num = 300;
     private double[] longtitudeSet = new double[gps_num];
     private double[] latitudeSet = new double[gps_num];
@@ -59,86 +74,40 @@ public class MainActivity extends AppCompatActivity {
     private OkHttpClient client=new OkHttpClient();
 
     private BluetoothAdapter mBluetoothAdapter;
+    private Intent bltScanService;
+    private Intent locationStorageService;
+    private AdvertiserFragment advertiserFragment=null ;//= new AdvertiserFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        button3 = (Button) findViewById(R.id.button3);
         button2 = (Button) findViewById(R.id.button2);
         imageButton = (ImageButton) findViewById(R.id.imageButton);
-        txtResult = (TextView)findViewById(R.id.txtResult);
-        txtResult2 = (TextView)findViewById(R.id.txtResult2);
+        hostButton = (Button) findViewById(R.id.hostButton);
+        userButton = (Button) findViewById(R.id.userButton);
+//       // textView = (TextView) findViewById(R.id.textView);
+//       // editTextView = (EditText) findViewById(R.id.editTextView);
+
         Requests request = new Requests("http://115.21.52.248:8080/location/GPS");
 
-        MediaPlayer player = MediaPlayer.create(this, R.raw.beep);
+        storageLocationSwitch = (Switch)findViewById(R.id.storageLocationSwitch);
+        bluetoothSwitch = (Switch)findViewById(R.id.bluetoothSwitch);
+
+
+
+
+
+        //MediaPlayer player = MediaPlayer.create(this, R.raw.beep);
         //player.start();
 
 
 
 
-        //블루투스 광고시작
-        Context context = MainActivity.this;
-
-        if (savedInstanceState == null) {
-
-            mBluetoothAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE))
-                    .getAdapter();
-
-            // Is Bluetooth, gps supported on this device?
-
-            if ( Build.VERSION.SDK_INT >= 23 &&
-                    ContextCompat.checkSelfPermission( getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-                ActivityCompat.requestPermissions( MainActivity.this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
-                        0 );
-            }
-
-            if (mBluetoothAdapter != null) {
-
-                // Is Bluetooth turned on?
-                if (mBluetoothAdapter.isEnabled()) {
-
-                    // Are Bluetooth Advertisements supported on this device?
-                    if (mBluetoothAdapter.isMultipleAdvertisementSupported()) {
-
-                        // Everything is supported and enabled, load the fragments.
-                        setupFragments();
-
-                    } else {
-
-                        // Bluetooth Advertisements are not supported.
-                        showErrorText(R.string.bt_ads_not_supported);
-                    }
-                } else {
-
-                    // Prompt user to turn on Bluetooth (logic continues in onActivityResult()).
-                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    startActivityForResult(enableBtIntent, Constants.REQUEST_ENABLE_BT);
-                }
-            } else {
-
-                // Bluetooth is not supported.
-                showErrorText(R.string.bt_not_supported);
-            }
-        }
-
-        //블루투스 광고 끝
 
 
 
-        //블루투스 스캐너 포그라운드시작
-
-
-        Intent serviceIntent1 = new Intent(this, MybltScanService.class);
-        startService(serviceIntent1);
-
-        //위치저장 포그라운드시작
-
-        Intent serviceIntent = new Intent(this, MylocationStorageService.class);
-        startService(serviceIntent);
-
-        //포그라운드 끝
 
 
 
@@ -188,10 +157,7 @@ public class MainActivity extends AppCompatActivity {
             double latitude = location.getLatitude();
             double altitude = location.getAltitude();
 
-            txtResult.setText("위치정보 : " + provider + "\n" +
-                    "위도 : " + latitude + "\n" +
-                    "경도 : " + longitude + "\n" +
-                    "고도  : " + altitude);
+
             /*
             System.out.println(provider  + "   " + latitude + "   " + longitude);
 
@@ -277,7 +243,6 @@ public class MainActivity extends AppCompatActivity {
         }
         System.out.println("최빈수 : " + modeNum + "    cnt : " + modeCnt);
 
-        txtResult2.setText("최빈수 : " + modeNum + "    cnt : " + modeCnt);
         return modeCnt;
     }
     //소수의 중앙값 리턴
@@ -561,83 +526,260 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onPause(){
+        super.onPause();
+        Toast.makeText(this,"onPause 호출",Toast.LENGTH_LONG).show();
+        saveState();
+
+    }
 
     @Override
     protected void onResume(){
         super.onResume();
+        System.out.println("userid2: " + userID);
 
-
-        if(access_token==null) {
-            new Thread() {
-                public void run() {
-                    test2 = new Requests("http://115.21.52.248:8080/kakao/connect").getLoginUrl();
-                }
-            }.start();
-            imageButton.setVisibility(View.VISIBLE);
-            //버튼 클릭리스너
-            System.out.println("onResume login : ");
-            imageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    System.out.println("onResume login : " + access_token);
-                    new Thread() {
-                        public void run() {
-                            test2 = new Requests("http://115.21.52.248:8080/kakao/connect").getLoginUrl();
-                        }
-                    }.start();
-
-                    Intent intent = new Intent(getApplicationContext(), WebViewPage.class);
-                    intent.putExtra("my_data", test2);
-
-                    System.out.println("onResume 로그인버튼 클릭 : " + test2);
-                    // 로그인하고나면 로그아웃만 생기게
-                    imageButton.setVisibility(View.GONE);
-                    button2.setVisibility(View.VISIBLE);
-                    startActivityForResult(intent, 100);
-                }
-            });
-        }else {
-            new Thread() {
-                public void run() {
-                    test2 = new Requests("http://115.21.52.248:8080/kakao/logout?id=").kakaoLogout(userID, access_token);
-                }
-            }.start();
-            System.out.println("onResume logout  : " + access_token);
+        restoreState();
+        if(advertiserFragment==null) {
+            System.out.println("ad null");
+            advertiserFragment = new AdvertiserFragment();
+        }
+        if(access_token!=null&&hostOrUser==0)
+            advertiserFragment.inputUserID(userID);
+        if(hostOrUser==0) {
+            System.out.println("case100 : "+hostOrUser);
             imageButton.setVisibility(View.GONE);
             button2.setVisibility(View.VISIBLE);
-            button2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //access_token 해제하는 코드
-                    new Thread() {
-                        public void run() {
-                            confirmAT();
-                            test2 = new Requests("http://115.21.52.248:8080/kakao/logout?id=").kakaoLogout(userID, access_token);
-                            access_token=null;
-                        }
-                    }.start();
-
-                    Intent intent = new Intent(getApplicationContext(), WebViewPage.class);
-                    intent.putExtra("my_data", test2);
-
-                    System.out.println("onResume 로그아웃버튼 클릭 : " + test2);
-                    // 로그아웃하고나면 로그인만 생기게
-                    imageButton.setVisibility(View.VISIBLE);
-                    button2.setVisibility(View.GONE);
-                    startActivityForResult(intent, 200);
-
-                }
-            });
+            storageLocationSwitch.setVisibility(View.GONE);
+            bluetoothSwitch.setVisibility(View.GONE);
+            hostButton.setVisibility(View.GONE);
+            userButton.setVisibility(View.GONE);
         }
-        button3.setOnClickListener(new View.OnClickListener() {
+        else if(hostOrUser==1){
+            System.out.println("case100 : "+hostOrUser);
+            imageButton.setVisibility(View.GONE);
+            button2.setVisibility(View.VISIBLE);
+            storageLocationSwitch.setVisibility(View.VISIBLE);
+            bluetoothSwitch.setVisibility(View.VISIBLE);
+            hostButton.setVisibility(View.GONE);
+            userButton.setVisibility(View.GONE);
+        }
+        //블루투스 광고시작
+        Context context = MainActivity.this;
+
+//        if (savedInstanceState == null) {
+
+            mBluetoothAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE))
+                    .getAdapter();
+
+            // Is Bluetooth, gps supported on this device?
+
+            if (Build.VERSION.SDK_INT >= 23 &&
+                    ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        0);
+            }
+
+            if (mBluetoothAdapter != null) {
+
+                // Is Bluetooth turned on?
+                if (mBluetoothAdapter.isEnabled()) {
+
+                    // Are Bluetooth Advertisements supported on this device?
+                    if (mBluetoothAdapter.isMultipleAdvertisementSupported()) {
+
+                        // Everything is supported and enabled, load the fragments.
+                        if(hostOrUser==0) {
+
+                            setupFragments();
+                        }
+
+                    } else {
+
+                        // Bluetooth Advertisements are not supported.
+                        showErrorText(R.string.bt_ads_not_supported);
+                    }
+                } else {
+
+                    // Prompt user to turn on Bluetooth (logic continues in onActivityResult()).
+                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableBtIntent, Constants.REQUEST_ENABLE_BT);
+                }
+            } else {
+
+                // Bluetooth is not supported.
+                showErrorText(R.string.bt_not_supported);
+            }
+//        }
+
+        //블루투스 광고 끝
+
+
+
+        //블루투스 스캐너 포그라운드시작
+        bltScanService = new Intent(this, MybltScanService.class);
+        //startService(bltScanService);
+
+
+        //위치저장 포그라운드시작
+
+        locationStorageService = new Intent(this, MylocationStorageService.class);
+
+        //startService(locationStorageService);
+        //포그라운드 끝
+
+
+        // 위치 저장,블루투스 자동 체크인 체크되어있었으면 다시 체크한상태로..
+        if(globalLocationChecked==true){
+            storageLocationSwitch.setChecked(true);
+        }
+        if(globalBluetoothChecked==true){
+            bluetoothSwitch.setChecked(true);
+        }
+        //onclick 버튼들
+
+        hostButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View v) {
-                //gps잠금 버튼
+            public void onClick(View view) {
+                if(hostOrUser==-1) {
+                    hostOrUser = 0;
+                    userButton.setEnabled(false);
+                    imageButton.setEnabled(true);
+                    imageButton.setVisibility(View.VISIBLE);
+//                    textView.setVisibility(View.VISIBLE);
+//                    editTextView.setVisibility(View.VISIBLE);
+                }
+                else if(hostOrUser==0){
+                    hostOrUser=-1;
+                    userButton.setEnabled(true);
+                    imageButton.setVisibility(View.GONE);
+                }
+            }
+        });
+        userButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if(hostOrUser==-1) {
+                    hostOrUser = 1;
+                    hostButton.setEnabled(false);
+                    imageButton.setEnabled(true);
+                    imageButton.setVisibility(View.VISIBLE);
+                }
+                else if(hostOrUser==1){
+                    hostOrUser=-1;
+                    hostButton.setEnabled(true);
+                    imageButton.setVisibility(View.GONE);
+                }
+            }
+        });
+
+
+            if (access_token == null) {
+                new Thread() {
+                    public void run() {
+                        test2 = new Requests("http://115.21.52.248:8080/kakao/connect").getLoginUrl();
+                    }
+                }.start();
+                //버튼 클릭리스너
+                System.out.println("onResume login : ");
+                imageButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        System.out.println("onResume login : " + access_token);
+                        if(hostOrUser==0) {
+                            //advertiserFragment = new AdvertiserFragment();
+                            setupFragments();
+                        }
+                        new Thread() {
+                            public void run() {
+                                test2 = new Requests("http://115.21.52.248:8080/kakao/connect").getLoginUrl();
+                            }
+                        }.start();
+
+                        Intent intent = new Intent(getApplicationContext(), WebViewPage.class);
+                        intent.putExtra("my_data", test2);
+
+
+                        startActivityForResult(intent, 100);
+                    }
+
+
+                });
+
+            } else {
+                new Thread() {
+                    public void run() {
+                        test2 = new Requests("http://115.21.52.248:8080/kakao/logout?id=").kakaoLogout(userID, access_token);
+                    }
+                }.start();
+                button2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //access_token 해제하는 코드
+                        new Thread() {
+                            public void run() {
+                                confirmAT();
+                                test2 = new Requests("http://115.21.52.248:8080/kakao/logout?id=").kakaoLogout(userID, access_token);
+                                access_token = null;
+                            }
+                        }.start();
+
+                        Intent intent = new Intent(getApplicationContext(), WebViewPage.class);
+                        intent.putExtra("my_data", test2);
+
+                        System.out.println("onResume 로그아웃버튼 클릭 : " + test2);
+
+                        startActivityForResult(intent, 200);
+
+
+                    }
+                });
+
+            }
+
+        //위치저장 껏다켜기
+        storageLocationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // TODO Auto-generated method stub
+
+
+                if(isChecked == true){
+                    locationStorageService.putExtra("userID2", userID);
+                    startService(locationStorageService);
+                    globalLocationChecked = isChecked;
+                }
+                else{
+                    stopService(locationStorageService);
+                    globalLocationChecked = isChecked;
+                }
+            }
+        });
+
+        //블루투스 껏다켜기
+        bluetoothSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                // TODO Auto-generated method stub
+
+                if(isChecked == true){
+                    bltScanService.putExtra("userID", userID);
+                    startService(bltScanService);
+                    globalBluetoothChecked = isChecked;
+                }
+                else{
+                    stopService(bltScanService);
+                    globalBluetoothChecked = isChecked;
+                }
 
             }
         });
 
     }
+
     //블루투스 함수 시작
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -652,7 +794,9 @@ public class MainActivity extends AppCompatActivity {
                     if (mBluetoothAdapter.isMultipleAdvertisementSupported()) {
 
                         // Everything is supported and enabled, load the fragments.
-                        setupFragments();
+                            if(hostOrUser==0) {
+                                setupFragments();
+                            }
 
                     } else {
 
@@ -671,12 +815,51 @@ public class MainActivity extends AppCompatActivity {
                 access_token = data.getStringExtra("access_token");
                 refresh_token = data.getStringExtra("refresh_token");
                 userID = data.getStringExtra("userID");
-                System.out.println("get Activity result: " + access_token + " " + refresh_token + " "+userID);
+                if(hostOrUser==0) {
+                    System.out.println("case100 : "+hostOrUser);
+                    imageButton.setVisibility(View.GONE);
+                    button2.setVisibility(View.VISIBLE);
+                    storageLocationSwitch.setVisibility(View.GONE);
+                    bluetoothSwitch.setVisibility(View.GONE);
+                    hostButton.setVisibility(View.GONE);
+                    userButton.setVisibility(View.GONE);
+                }
+                else if(hostOrUser==1){
+                    System.out.println("case100 : "+hostOrUser);
+                    imageButton.setVisibility(View.GONE);
+                    button2.setVisibility(View.VISIBLE);
+                    storageLocationSwitch.setVisibility(View.VISIBLE);
+                    bluetoothSwitch.setVisibility(View.VISIBLE);
+                    hostButton.setVisibility(View.GONE);
+                    userButton.setVisibility(View.GONE);
+                }
                 break;
             case 200:
                 access_token = data.getStringExtra("access_token");
                 refresh_token = data.getStringExtra("refresh_token");
                 userID = data.getStringExtra("userID");
+                // 로그아웃하고나서
+
+                button2.setVisibility(View.GONE);
+                storageLocationSwitch.setVisibility(View.GONE);
+                bluetoothSwitch.setVisibility(View.GONE);
+                hostButton.setVisibility(View.VISIBLE);
+                userButton.setVisibility(View.VISIBLE);
+                hostButton.setEnabled(true);
+                userButton.setEnabled(true);
+                imageButton.setVisibility(View.GONE);
+
+                clearPrefs();
+                storageLocationSwitch.setChecked(false);
+                bluetoothSwitch.setChecked(false);
+                if(hostOrUser==0){
+                    removeFragments();
+                    advertiserFragment.logoutAdvertising();
+                }
+                hostOrUser=-1;
+                userID=null;
+
+
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
@@ -691,10 +874,18 @@ public class MainActivity extends AppCompatActivity {
         scannerFragment.setBluetoothAdapter(mBluetoothAdapter);
         transaction.replace(R.id.scanner_fragment_container, scannerFragment);
         */
-        AdvertiserFragment advertiserFragment = new AdvertiserFragment();
         transaction.replace(R.id.advertiser_fragment_container, advertiserFragment);
-
         transaction.commit();
+    }
+    private void removeFragments(){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+
+        transaction.replace(R.id.advertiser_fragment_container, advertiserFragment);
+        transaction.hide(advertiserFragment);
+        //transaction.remove(advertiserFragment);
+        transaction.commit();
+
     }
 
     private void showErrorText(int messageId) {
@@ -706,7 +897,45 @@ public class MainActivity extends AppCompatActivity {
 
     //블루투스 함수 끝끝
 
-
+    //State관리 함수
+    protected void saveState(){
+        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("userID",userID);
+        editor.putString("access_token",access_token);
+        editor.putBoolean("globalLocationChecked",globalLocationChecked);
+        editor.putBoolean("globalBluetoothChecked",globalBluetoothChecked);
+        editor.putBoolean("globalAdvertiserChecked",globalAdvertiserChecked);
+        editor.putInt("hostOrUser",hostOrUser);
+        editor.commit();
+    }
+    protected void restoreState(){
+        SharedPreferences pref = getSharedPreferences("pref",Activity.MODE_PRIVATE);
+        if((pref!=null)&&(pref.contains("userID")) ){
+            userID = pref.getString("userID","");
+        }
+        if((pref!=null)&&(pref.contains("access_token")) ){
+            access_token = pref.getString("access_token","");
+        }
+        if((pref!=null)&&(pref.contains("globalLocationChecked"))){
+            globalLocationChecked = pref.getBoolean("globalLocationChecked",false);
+        }
+        if((pref!=null)&&(pref.contains("globalBluetoothChecked"))){
+            globalBluetoothChecked = pref.getBoolean("globalBluetoothChecked",false);
+        }
+        if((pref!=null)&&(pref.contains("globalAdvertiserChecked"))){
+            globalAdvertiserChecked = pref.getBoolean("globalAdvertiserChecked",false);
+        }
+        if((pref!=null)&&(pref.contains("hostOrUser"))){
+            hostOrUser = pref.getInt("hostOrUser",-1);
+        }
+    }
+    protected void clearPrefs(){
+        SharedPreferences pref = getSharedPreferences("pref",Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.clear();
+        editor.commit();
+    }
 
 }
 

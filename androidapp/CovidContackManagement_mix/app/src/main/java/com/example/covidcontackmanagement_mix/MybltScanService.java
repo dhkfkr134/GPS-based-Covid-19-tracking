@@ -22,7 +22,10 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class MybltScanService extends Service {
@@ -30,6 +33,15 @@ public class MybltScanService extends Service {
     private BluetoothLeScanner mBluetoothLeScanner;
     private ScanCallback mScanCallback;
     private ScanResult res;
+    private String userID = "01";
+    private String beforeLocation = "";
+    private String intime;
+    private long now;
+    private Date date;
+    private SimpleDateFormat sdf;
+
+    private Requests requests = new Requests("http://115.21.52.248:8080/location/bluetooth");
+
 
     public MybltScanService() {
     }
@@ -53,6 +65,8 @@ public class MybltScanService extends Service {
                 = PendingIntent.getActivity(this, 0, testIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         System.out.println("startservice");
+
+        userID = intent.getStringExtra("userID");
 
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -90,6 +104,16 @@ public class MybltScanService extends Service {
         return START_NOT_STICKY;
     }
 
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        mBluetoothLeScanner.stopScan(mScanCallback);
+
+    }
+
+
+
     private List<ScanFilter> buildScanFilters() {
         List<ScanFilter> scanFilters = new ArrayList<>();
 
@@ -126,15 +150,58 @@ public class MybltScanService extends Service {
             ScanRecord scanRecord = result.getScanRecord();
             byte[] servicedata =  scanRecord.getServiceData(Constants.Service_UUID);
             int rssi = res.getRssi();
+            String presentLocation = new String(servicedata);
             System.out.println("rssi: " + rssi +"\n"
-                    + servicedata[0] + servicedata[1]);
+                    + presentLocation);
 
-            if(rssi>-70) {
+            if(rssi>-70 ) {
                 //미디어플레이
                 //MediaPlayer player = MediaPlayer.create(, R.raw.beep);
-                MediaPlayer player = MediaPlayer.create(getApplicationContext(),R.raw.beep);
-                player.start();
+                System.out.println("before:" + beforeLocation + "pre" + presentLocation);
+                if(!beforeLocation.equals(presentLocation)){
+
+                    MediaPlayer player = MediaPlayer.create(getApplicationContext(), R.raw.beep);
+                    player.start();
+
+                    //입장시간
+                    now = System.currentTimeMillis();
+                    date = new Date(now);
+
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(date);
+                    cal.add(Calendar.HOUR, +2);
+
+                    sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    intime = sdf.format(cal.getTime());
+
+
+                    //서버로데이터보내기
+                    System.out.println("dataset: " +userID +" pre: " +presentLocation +"intime: "+ intime);
+
+                    new Thread(){
+                        @Override
+                        public void run() {
+                            super.run();
+                            requests.postBluetooth(userID, presentLocation, intime );
+                        }
+                    }.start();
+
+
+                    //이전장소로저장
+                    beforeLocation = presentLocation;
+
+                }
+                now = System.currentTimeMillis();
+                date = new Date(now);
+
+                sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String nowtime = sdf.format(date);
+                if(nowtime.compareTo(intime) > 0 ){
+                    beforeLocation = "";
+                }
             }
+
+
             //mAdapter.add(result);
             //mAdapter.notifyDataSetChanged();
         }

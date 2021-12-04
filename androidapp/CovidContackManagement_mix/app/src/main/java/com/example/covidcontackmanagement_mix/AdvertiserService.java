@@ -59,18 +59,36 @@ public class AdvertiserService extends Service {
 
     private Runnable timeoutRunnable;
 
+    private String userID = "01";
+
     /**
      * Length of time to allow advertising before automatically shutting off. (10 minutes)
      */
-    private long TIMEOUT = TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES);
+    private long TIMEOUT = TimeUnit.MILLISECONDS.convert(7, TimeUnit.DAYS);
 
     @Override
     public void onCreate() {
         running = true;
+        /*
         initialize();
         startAdvertising();
         setTimeout();
+
+         */
         super.onCreate();
+
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        userID = intent.getStringExtra("userID");
+        System.out.println("advertise userid = " + userID);
+        //oncreate 꺼 가져옴
+        initialize();
+        startAdvertising();
+        setTimeout();
+
+        return START_NOT_STICKY;
     }
 
     @Override
@@ -217,7 +235,7 @@ public class AdvertiserService extends Service {
         //dataBuilder.setIncludeDeviceName(true);
         //내가 신호 값을 설정, 추가.
         /* For example - this will cause advertising to fail (exceeds size limit) */
-        String signalData = "covdddddddddddddd"; //일단 17바이트(17글짜까진 됨)
+        String signalData = userID; //일단 17바이트(17글짜까진 됨)
         dataBuilder.addServiceData(Constants.Service_UUID, signalData.getBytes());
         //test
         System.out.println("확인해요" + signalData.getBytes());

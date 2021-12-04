@@ -49,12 +49,12 @@ public class Requests {
         }
         return false;
     }
-    public boolean postBluetooth(int userId, int hostID, String inTime){
+    public boolean postBluetooth(String userId, String hostID, String inTime){
         OkHttpClient client = new OkHttpClient();
         try{
             RequestBody formBody=new FormBody.Builder()
-                    .add("id",Integer.toString(userId))
-                    .add("hostID",Integer.toString(hostID))
+                    .add("id",userId)
+                    .add("hostID",hostID)
                     .add("inTime",inTime)
                     .build();
             Request request=new Request.Builder()

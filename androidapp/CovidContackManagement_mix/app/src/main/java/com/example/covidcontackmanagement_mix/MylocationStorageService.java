@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -41,12 +42,12 @@ public class MylocationStorageService extends Service {
     private Button button1;
     private TextView txtResult;
     private TextView txtResult2;
-    private int gps_num = 10;
+    private int gps_num =10 ;
     private double[] longtitudeSet = new double[gps_num];
     private double[] latitudeSet = new double[gps_num];
     private double latitudeMedian;
     private double longtitudeMedian;
-    private String userID = "2009927521";
+    private String userID = "01";
     private String intime;
     private String outtime;
     private String mugunghwa;
@@ -57,6 +58,7 @@ public class MylocationStorageService extends Service {
     private OkHttpClient client = new OkHttpClient();
 
     private BluetoothAdapter mBluetoothAdapter;
+    private Thread gpsThread;
 
     public MylocationStorageService() {
     }
@@ -72,11 +74,14 @@ public class MylocationStorageService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        System.out.println("before:" + userID);
+        userID = intent.getStringExtra("userID");
+        System.out.println("fix:" + userID);
+
         //bluetooth foreground start
         // Initializes Bluetooth adapter.
 
-
-
+        //userid
 
         //gps foreground start
         Requests request = new Requests("http://115.21.52.248:8080/location/GPS");
@@ -146,11 +151,14 @@ public class MylocationStorageService extends Service {
 
 
         //gps처리 thread
-        new Thread(new Runnable() {
+        gpsThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
 
+                    if(Thread.interrupted()) {
+                        break;
+                    }
 
 
                     //gps가져오기
@@ -197,7 +205,7 @@ public class MylocationStorageService extends Service {
 
                         //move
 
-
+                        System.out.println( "lat = " + latitudeModeRatio + "lon = " + longtitudeModeRatio + "res = " + (latitudeModeRatio < 0.5 && longtitudeModeRatio < 0.5));
                         if( latitudeModeRatio < 0.5 && longtitudeModeRatio < 0.5){
                             System.out.println("Move");
                             System.out.println("ratio: " + latitudeModeRatio + " " + longtitudeModeRatio );
@@ -207,7 +215,7 @@ public class MylocationStorageService extends Service {
 
                                 //서버로 전송
                                 System.out.println("stay -> move before: " + beforeLocation);
-                                request.postData(userID, mugunghwa, gpsString, intime, outtime,"");
+                                request.postData(userID, "SM"+mugunghwa, gpsString, intime, outtime,"");
 
                             }
 
@@ -230,16 +238,16 @@ public class MylocationStorageService extends Service {
                             String presentLocation = getGpsMgh(dmsArr.get(4));
 
                             //머물기 끝시간 계산
-                            long now = System.currentTimeMillis();
-                            Date date = new Date(now);
+                            long now ;
+                            Date date ;
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            outtime = sdf.format(date);
+
 
                             //장소 변경한경우 서버로 전달
                             if(beforeLocation.equals(presentLocation) == false && isMove == false) {
 
                                 System.out.println(mugunghwa +" " + gpsString + " " + intime + " " + outtime);
-                                request.postData(userID, mugunghwa, gpsString, intime, outtime, "");
+                                request.postData(userID, "SS" +mugunghwa, gpsString, intime, outtime, "");
 
                                 //머물기 시작시간계산
 
@@ -251,14 +259,16 @@ public class MylocationStorageService extends Service {
                                 cal.setTime(date);
                                 cal.add(Calendar.MINUTE, -5);
 
-                                sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
                                 intime = sdf.format(cal.getTime());
                                 mugunghwa = dmsArrTomugunghwas(dmsArr);
                                 gpsString = latitudeMedian + " " + longtitudeMedian;
                             }
+
+
 
                             //새로운 장소 stay시작한경우 변수들 갱신
-                            if(beforeLocation.equals(presentLocation) == false){
+                            if(!beforeLocation.equals(presentLocation)){
 
                                 //머물기 시작시간계산
                                 now = System.currentTimeMillis();
@@ -268,12 +278,16 @@ public class MylocationStorageService extends Service {
                                 cal.setTime(date);
                                 cal.add(Calendar.MINUTE, -5);
 
-                                sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
                                 intime = sdf.format(cal.getTime());
                                 mugunghwa = dmsArrTomugunghwas(dmsArr);
                                 gpsString = latitudeMedian + " " + longtitudeMedian;
                             }
 
+                            //머물기 끝시간 계산
+                            now = System.currentTimeMillis();
+                            date = new Date(now);
+                            outtime = sdf.format(date);
 
 
                             beforeLocation = presentLocation;
@@ -300,10 +314,14 @@ public class MylocationStorageService extends Service {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                        break;
                     }
+
+
                 }
             }
-        }).start();
+        });
+        gpsThread.start();
         //thread끝
 
 
@@ -313,6 +331,22 @@ public class MylocationStorageService extends Service {
 
 
         return START_NOT_STICKY;
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+
+        try {
+            gpsThread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        gpsThread.interrupt();
+
+
+
     }
 
     final LocationListener gpsLocationListener = new LocationListener() {
@@ -373,7 +407,7 @@ public class MylocationStorageService extends Service {
         }
     };
 
-    public int modeRatio(float[] arr) {
+    public float modeRatio(float[] arr) {
 
         float[] mode = new float[gps_num];
 
@@ -407,10 +441,11 @@ public class MylocationStorageService extends Service {
                 modeNum = value[i];
             }
         }
+
         //System.out.println("최빈수 : " + modeNum + "    cnt : " + modeCnt);
 
 
-        return modeCnt;
+        return modeCnt/arr.length;
     }
     //소수의 중앙값 리턴
     private static double getMedian(double[] arrayDouble) {
