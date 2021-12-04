@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -41,7 +42,7 @@ public class MylocationStorageService extends Service {
     private Button button1;
     private TextView txtResult;
     private TextView txtResult2;
-    private int gps_num = 300;
+    private int gps_num =10 ;
     private double[] longtitudeSet = new double[gps_num];
     private double[] latitudeSet = new double[gps_num];
     private double latitudeMedian;
@@ -204,7 +205,7 @@ public class MylocationStorageService extends Service {
 
                         //move
 
-
+                        System.out.println( "lat = " + latitudeModeRatio + "lon = " + longtitudeModeRatio + "res = " + (latitudeModeRatio < 0.5 && longtitudeModeRatio < 0.5));
                         if( latitudeModeRatio < 0.5 && longtitudeModeRatio < 0.5){
                             System.out.println("Move");
                             System.out.println("ratio: " + latitudeModeRatio + " " + longtitudeModeRatio );
