@@ -5,10 +5,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -71,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        button3 = (Button) findViewById(R.id.button3);
         button2 = (Button) findViewById(R.id.button2);
 
 
@@ -87,6 +88,13 @@ public class MainActivity extends AppCompatActivity {
 
         //MediaPlayer player = MediaPlayer.create(this, R.raw.beep);
         //player.start();
+
+        System.out.println("userID :"+userID);
+        if(userID!=null){
+            System.out.println("userID 유지");
+            button2.setVisibility(View.VISIBLE);
+            imageButton.setVisibility(View.GONE);
+        }
 
 
 
@@ -576,11 +584,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onPause(){
+        super.onPause();
+        Toast.makeText(this,"onPause 호출",Toast.LENGTH_LONG).show();
+        saveState();
+    }
 
     @Override
     protected void onResume(){
         super.onResume();
         System.out.println("userid2: " + userID);
+
+        restoreState();
 
         if(access_token==null) {
             new Thread() {
@@ -604,10 +620,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), WebViewPage.class);
                     intent.putExtra("my_data", test2);
 
-                    System.out.println("onResume 로그인버튼 클릭 : " + test2);
-                    // 로그인하고나면 로그아웃만 생기게
-                    imageButton.setVisibility(View.GONE);
-                    button2.setVisibility(View.VISIBLE);
+
                     startActivityForResult(intent, 100);
                 }
 
@@ -616,52 +629,6 @@ public class MainActivity extends AppCompatActivity {
 
 
             });
-
-            //위치저장 껏다켜기
-            storageLocationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    // TODO Auto-generated method stub
-
-                    Toast.makeText(MainActivity.this, "체크상태 = " + isChecked, Toast.LENGTH_SHORT).show();
-
-                    if(isChecked == true){
-                        locationStorageService.putExtra("userID", userID);
-                        startService(locationStorageService);
-
-                    }
-                    else{
-                        stopService(locationStorageService);
-                    }
-
-                }
-            });
-
-            //블루투스 껏다켜기
-            bluetoothSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-                @Override
-
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                    // TODO Auto-generated method stub
-
-                    Toast.makeText(MainActivity.this, "체크상태 = " + isChecked, Toast.LENGTH_SHORT).show();
-
-                    if(isChecked == true){
-
-                        startService(bltScanService);
-
-                    }
-                    else{
-                        stopService(bltScanService);
-                    }
-
-                }
-            });
-
-
-
 
 
         }else {
@@ -673,6 +640,8 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("onResume logout  : " + access_token);
             imageButton.setVisibility(View.GONE);
             button2.setVisibility(View.VISIBLE);
+            storageLocationSwitch.setVisibility(View.VISIBLE);
+            bluetoothSwitch.setVisibility(View.VISIBLE);
             button2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -692,15 +661,54 @@ public class MainActivity extends AppCompatActivity {
                     // 로그아웃하고나면 로그인만 생기게
                     imageButton.setVisibility(View.VISIBLE);
                     button2.setVisibility(View.GONE);
+                    storageLocationSwitch.setVisibility(View.GONE);
+                    bluetoothSwitch.setVisibility(View.GONE);
                     startActivityForResult(intent, 200);
 
                 }
             });
+
         }
-        button3.setOnClickListener(new View.OnClickListener() {
+
+//위치저장 껏다켜기
+        storageLocationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                //gps잠금 버튼
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // TODO Auto-generated method stub
+
+                Toast.makeText(MainActivity.this, "체크상태 = " + isChecked, Toast.LENGTH_SHORT).show();
+
+                if(isChecked == true){
+                    locationStorageService.putExtra("userID", userID);
+                    startService(locationStorageService);
+
+                }
+                else{
+                    stopService(locationStorageService);
+                }
+
+            }
+        });
+
+        //블루투스 껏다켜기
+        bluetoothSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                // TODO Auto-generated method stub
+
+                Toast.makeText(MainActivity.this, "체크상태 = " + isChecked, Toast.LENGTH_SHORT).show();
+
+                if(isChecked == true){
+
+                    startService(bltScanService);
+
+                }
+                else{
+                    stopService(bltScanService);
+                }
 
             }
         });
@@ -739,12 +747,21 @@ public class MainActivity extends AppCompatActivity {
                 access_token = data.getStringExtra("access_token");
                 refresh_token = data.getStringExtra("refresh_token");
                 userID = data.getStringExtra("userID");
+                System.out.println("on activityResult userID : "+userID);
+                txtResult2.setText(userID);
                 System.out.println("get Activity result: " + access_token + " " + refresh_token + " "+userID);
+                // 로그인하고나면 로그아웃만 생기게
+                imageButton.setVisibility(View.GONE);
+                button2.setVisibility(View.VISIBLE);
+                storageLocationSwitch.setVisibility(View.VISIBLE);
+                bluetoothSwitch.setVisibility(View.VISIBLE);
                 break;
             case 200:
                 access_token = data.getStringExtra("access_token");
                 refresh_token = data.getStringExtra("refresh_token");
                 userID = data.getStringExtra("userID");
+                clearPrefs();
+
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
@@ -774,7 +791,29 @@ public class MainActivity extends AppCompatActivity {
 
     //블루투스 함수 끝끝
 
-
+    //State관리 함수
+    protected void saveState(){
+        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("userID",userID);
+        editor.putString("access_token",access_token);
+        editor.commit();
+    }
+    protected void restoreState(){
+        SharedPreferences pref = getSharedPreferences("pref",Activity.MODE_PRIVATE);
+        if((pref!=null)&&(pref.contains("userID")) ){
+            userID = pref.getString("userID","");
+        }
+        if((pref!=null)&&(pref.contains("access_token")) ){
+            access_token = pref.getString("access_token","");
+        }
+    }
+    protected void clearPrefs(){
+        SharedPreferences pref = getSharedPreferences("pref",Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.clear();
+        editor.commit();
+    }
 
 }
 
