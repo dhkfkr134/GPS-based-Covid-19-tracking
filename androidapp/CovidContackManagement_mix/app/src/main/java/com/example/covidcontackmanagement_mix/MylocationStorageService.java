@@ -214,7 +214,7 @@ public class MylocationStorageService extends Service {
 
                                 //서버로 전송
                                 System.out.println("stay -> move before: " + beforeLocation);
-                                request.postData(userID, mugunghwa, gpsString, intime, outtime,"");
+                                request.postData(userID, "SM"+mugunghwa, gpsString, intime, outtime,"");
 
                             }
 
@@ -246,7 +246,7 @@ public class MylocationStorageService extends Service {
                             if(beforeLocation.equals(presentLocation) == false && isMove == false) {
 
                                 System.out.println(mugunghwa +" " + gpsString + " " + intime + " " + outtime);
-                                request.postData(userID, mugunghwa, gpsString, intime, outtime, "");
+                                request.postData(userID, "SS" +mugunghwa, gpsString, intime, outtime, "");
 
                                 //머물기 시작시간계산
 
