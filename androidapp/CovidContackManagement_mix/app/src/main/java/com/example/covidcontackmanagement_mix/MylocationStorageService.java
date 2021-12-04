@@ -407,7 +407,7 @@ public class MylocationStorageService extends Service {
         }
     };
 
-    public int modeRatio(float[] arr) {
+    public float modeRatio(float[] arr) {
 
         float[] mode = new float[gps_num];
 
@@ -441,10 +441,11 @@ public class MylocationStorageService extends Service {
                 modeNum = value[i];
             }
         }
+
         //System.out.println("최빈수 : " + modeNum + "    cnt : " + modeCnt);
 
 
-        return modeCnt;
+        return modeCnt/arr.length;
     }
     //소수의 중앙값 리턴
     private static double getMedian(double[] arrayDouble) {
