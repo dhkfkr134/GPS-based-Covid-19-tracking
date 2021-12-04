@@ -7,13 +7,6 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="800px"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="GPS끄기" />
-
 
     <ImageButton
         android:id="@+id/imageButton"
@@ -51,7 +44,8 @@
         android:layout_height="wrap_content"
         android:switchMinWidth="100dp"
         android:switchPadding="20dp"
-        android:text="위치 저장"
+        android:text="위치 저장         "
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -63,24 +57,11 @@
         android:switchMinWidth="100dp"
         android:switchPadding="20dp"
         android:text="블루투스 자동 체크인"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/storageLocationSwitch" />
 
-
-    <FrameLayout
-        android:id="@+id/scanner_fragment_container"
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="0px" >
-
-        <TextView
-            android:id="@+id/error_textview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:freezesText="true" />
-
-    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/advertiser_fragment_container"
