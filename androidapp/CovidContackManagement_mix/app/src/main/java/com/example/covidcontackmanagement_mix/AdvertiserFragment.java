@@ -34,6 +34,8 @@ import android.widget.Toast;
  * Allows user to start & stop Bluetooth LE Advertising of their device.
  */
 public class AdvertiserFragment extends Fragment implements View.OnClickListener {
+    private String userID;
+
 
     /**
      * Lets user toggle BLE Advertising.
@@ -162,7 +164,11 @@ public class AdvertiserFragment extends Fragment implements View.OnClickListener
      */
     private void startAdvertising() {
         Context c = getActivity();
-        c.startService(getServiceIntent(c));
+        Intent serviceIntent = getServiceIntent(c);
+
+        System.out.println("advertise fragment userid: "+ userID);
+        serviceIntent.putExtra("userID", userID);
+        c.startService(serviceIntent);
     }
 
     /**
@@ -172,6 +178,10 @@ public class AdvertiserFragment extends Fragment implements View.OnClickListener
         Context c = getActivity();
         c.stopService(getServiceIntent(c));
         mSwitch.setChecked(false);
+    }
+
+    public void inputUserID(String userID){
+        this.userID = userID;
     }
 
 }

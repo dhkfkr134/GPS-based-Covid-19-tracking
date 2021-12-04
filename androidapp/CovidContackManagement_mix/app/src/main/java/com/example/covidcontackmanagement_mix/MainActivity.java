@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
     Intent bltScanService;
     Intent locationStorageService;
 
+    private AdvertiserFragment advertiserFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -597,6 +599,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("userid2: " + userID);
 
         restoreState();
+        advertiserFragment.inputUserID(userID);
 
         if(access_token==null) {
             new Thread() {
@@ -776,7 +779,7 @@ public class MainActivity extends AppCompatActivity {
         scannerFragment.setBluetoothAdapter(mBluetoothAdapter);
         transaction.replace(R.id.scanner_fragment_container, scannerFragment);
         */
-        AdvertiserFragment advertiserFragment = new AdvertiserFragment();
+        advertiserFragment = new AdvertiserFragment();
         transaction.replace(R.id.advertiser_fragment_container, advertiserFragment);
 
         transaction.commit();
