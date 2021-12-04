@@ -24,10 +24,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton imageButton;
     private Switch storageLocationSwitch;
     private Switch bluetoothSwitch;
+//    private TextView textView;
+//    private EditText editTextView;
     private String test2;
     private String access_token=null;
     private String refresh_token=null;
@@ -82,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
         imageButton = (ImageButton) findViewById(R.id.imageButton);
         hostButton = (Button) findViewById(R.id.hostButton);
         userButton = (Button) findViewById(R.id.userButton);
+//        textView = (TextView) findViewById(R.id.textView);
+//        editTextView = (EditText) findViewById(R.id.editTextView);
 
         Requests request = new Requests("http://115.21.52.248:8080/location/GPS");
 
@@ -615,6 +622,8 @@ public class MainActivity extends AppCompatActivity {
                     userButton.setEnabled(false);
                     imageButton.setEnabled(true);
                     imageButton.setVisibility(View.VISIBLE);
+//                    textView.setVisibility(View.VISIBLE);
+//                    editTextView.setVisibility(View.VISIBLE);
                 }
                 else if(hostOrUser==0){
                     hostOrUser=-1;
