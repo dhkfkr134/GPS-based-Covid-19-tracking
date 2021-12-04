@@ -539,9 +539,26 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("userid2: " + userID);
 
         restoreState();
-        if(access_token!=null)
+        if(access_token!=null&&hostOrUser==0)
             advertiserFragment.inputUserID(userID);
-
+        if(hostOrUser==0) {
+            System.out.println("case100 : "+hostOrUser);
+            imageButton.setVisibility(View.GONE);
+            button2.setVisibility(View.VISIBLE);
+            storageLocationSwitch.setVisibility(View.GONE);
+            bluetoothSwitch.setVisibility(View.GONE);
+            hostButton.setVisibility(View.GONE);
+            userButton.setVisibility(View.GONE);
+        }
+        else if(hostOrUser==1){
+            System.out.println("case100 : "+hostOrUser);
+            imageButton.setVisibility(View.GONE);
+            button2.setVisibility(View.VISIBLE);
+            storageLocationSwitch.setVisibility(View.VISIBLE);
+            bluetoothSwitch.setVisibility(View.VISIBLE);
+            hostButton.setVisibility(View.GONE);
+            userButton.setVisibility(View.GONE);
+        }
         //블루투스 광고시작
         Context context = MainActivity.this;
 
@@ -830,10 +847,14 @@ public class MainActivity extends AppCompatActivity {
                 clearPrefs();
                 storageLocationSwitch.setChecked(false);
                 bluetoothSwitch.setChecked(false);
+                if(hostOrUser==0){
+                    removeFragments();
+                    advertiserFragment.logoutAdvertising();
+                }
                 hostOrUser=-1;
                 userID=null;
-                removeFragments();
-                advertiserFragment.logoutAdvertising();
+
+
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
