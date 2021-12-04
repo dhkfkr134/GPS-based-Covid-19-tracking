@@ -87,7 +87,7 @@ public class UserProfileController {
     	System.out.println("controller code : "+ code);
         HashMap<String, String> userInfo = kakao.getAccessToken(code);
         mapper.updateUserProfile(id, userInfo.get("access_token"), userInfo.get("refresh_token"), code);
-        return userInfo.get("access_code")+"/"+userInfo.get("refresh_token");
+        return userInfo.get("access_code")+" / "+userInfo.get("refresh_token");
     }
     
     @GetMapping("/logout/check")

@@ -34,7 +34,7 @@ public class OwnerProfileController {
 		OwnerProfile ownerProfile = new OwnerProfile();
 		ownerProfile.setCode(code);
 		System.out.println("controller code : " + code);
-		HashMap<String, String> ownerInfo = kakao.getAccessToken(code);
+		HashMap<String, String> ownerInfo = kakao.getHostAccessToken(code);
 		ownerProfile.setAccess_token(ownerInfo.get("access_token"));
 		ownerProfile.setRefresh_token(ownerInfo.get("refresh_token"));
 		System.out.println("controller access_token : " + ownerInfo.get("access_token"));
@@ -60,7 +60,7 @@ public class OwnerProfileController {
 		if (ownerProfile == null) {
 			return "failed";
 		} else {
-			return ownerProfile.getHostID() + "/" + ownerProfile.getAccess_token() + "/" + ownerProfile.getRefresh_token();
+			return ownerProfile.getHostID() + " / " + ownerProfile.getAccess_token() + " / " + ownerProfile.getRefresh_token();
 		}
 	}
 
@@ -72,9 +72,9 @@ public class OwnerProfileController {
 	@GetMapping("/refresh")
 	public String refresh(@RequestParam("refresh_token") String refresh_token) {
 		String id = mapper.getOwnerId(refresh_token);
-		HashMap<String, String> userInfo = kakao.updateToken(refresh_token);
-		mapper.updateToken(id, userInfo.get("access_token"), userInfo.get(refresh_token));
-		return userInfo.get("access_code") + "/" + userInfo.get("refresh_token");
+		HashMap<String, String> ownerInfo = kakao.updateToken(refresh_token);
+		mapper.updateToken(id, ownerInfo.get("access_token"), ownerInfo.get(refresh_token));
+		return ownerInfo.get("access_code") + " / " + ownerInfo.get("refresh_token");
 	}
 
 	@GetMapping("/logout/check")
