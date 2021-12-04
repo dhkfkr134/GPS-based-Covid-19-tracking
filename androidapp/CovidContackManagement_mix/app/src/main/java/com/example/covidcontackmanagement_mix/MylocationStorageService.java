@@ -13,21 +13,18 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentTransaction;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -38,7 +35,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class MyService extends Service {
+public class MylocationStorageService extends Service {
 
     private static final int TODO = 1;// 내가넣음
     private Button button1;
@@ -61,7 +58,7 @@ public class MyService extends Service {
 
     private BluetoothAdapter mBluetoothAdapter;
 
-    public MyService() {
+    public MylocationStorageService() {
     }
 
     @Override
@@ -75,6 +72,13 @@ public class MyService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        //bluetooth foreground start
+        // Initializes Bluetooth adapter.
+
+
+
+
+        //gps foreground start
         Requests request = new Requests("http://115.21.52.248:8080/location/GPS");
 
         Intent testIntent = new Intent(getApplicationContext(), MainActivity.class);
@@ -140,8 +144,6 @@ public class MyService extends Service {
 
 
 
-       //첫 시작시간.
-        intime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis()));
 
         //gps처리 thread
         new Thread(new Runnable() {
@@ -154,7 +156,7 @@ public class MyService extends Service {
                     //gps가져오기
 
 
-                    if (ActivityCompat.checkSelfPermission(MyService.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MyService.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(MylocationStorageService.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MylocationStorageService.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         // TODO: Consider calling
                         //    ActivityCompat#requestPermissions
                         // here to request the missing permissions, and then overriding
@@ -181,6 +183,8 @@ public class MyService extends Service {
 
                     if(sequence == gps_num-1){
 
+                        System.out.println("intime: " + intime + "outtime: " + outtime);
+
                         float[] roundedLongatitudeSet = new float[gps_num];
                         float[] roundedlatitudeSet = new float[gps_num];
                         int i = 0;
@@ -192,7 +196,10 @@ public class MyService extends Service {
                         float longtitudeModeRatio = modeRatio(roundedLongatitudeSet);
 
                         //move
+
+
                         if( latitudeModeRatio < 0.5 && longtitudeModeRatio < 0.5){
+                            System.out.println("Move");
                             System.out.println("ratio: " + latitudeModeRatio + " " + longtitudeModeRatio );
                             //머무르다가 이동할경우 서버로 stay송신
                             if(isMove == false){
@@ -210,14 +217,16 @@ public class MyService extends Service {
                         }
                         //stay
                         else{
+                            System.out.println("Stay");
+
                             //위경도 평균
                             latitudeMedian = getMedian(latitudeSet);
                             longtitudeMedian = getMedian(longtitudeSet);
-                            System.out.println(latitudeMedian + " " + longtitudeMedian);
+                            //System.out.println(latitudeMedian + " " + longtitudeMedian);
 
                             //무궁화코드로변환
                             List<String> dmsArr = gpsToDMS(latitudeMedian, longtitudeMedian);
-                            System.out.println("dms: "+dmsArr);
+                            //System.out.println("dms: "+dmsArr);
                             String presentLocation = getGpsMgh(dmsArr.get(4));
 
                             //머물기 끝시간 계산
@@ -233,10 +242,17 @@ public class MyService extends Service {
                                 request.postData(userID, mugunghwa, gpsString, intime, outtime, "");
 
                                 //머물기 시작시간계산
+
+
                                 now = System.currentTimeMillis();
                                 date = new Date(now);
+
+                                Calendar cal = Calendar.getInstance();
+                                cal.setTime(date);
+                                cal.add(Calendar.MINUTE, -5);
+
                                 sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                intime = sdf.format(date);
+                                intime = sdf.format(cal.getTime());
                                 mugunghwa = dmsArrTomugunghwas(dmsArr);
                                 gpsString = latitudeMedian + " " + longtitudeMedian;
                             }
@@ -244,11 +260,16 @@ public class MyService extends Service {
                             //새로운 장소 stay시작한경우 변수들 갱신
                             if(beforeLocation.equals(presentLocation) == false){
 
-                                //머물기시작
+                                //머물기 시작시간계산
                                 now = System.currentTimeMillis();
                                 date = new Date(now);
+
+                                Calendar cal = Calendar.getInstance();
+                                cal.setTime(date);
+                                cal.add(Calendar.MINUTE, -5);
+
                                 sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                intime = sdf.format(date);
+                                intime = sdf.format(cal.getTime());
                                 mugunghwa = dmsArrTomugunghwas(dmsArr);
                                 gpsString = latitudeMedian + " " + longtitudeMedian;
                             }
@@ -386,7 +407,7 @@ public class MyService extends Service {
                 modeNum = value[i];
             }
         }
-        System.out.println("최빈수 : " + modeNum + "    cnt : " + modeCnt);
+        //System.out.println("최빈수 : " + modeNum + "    cnt : " + modeCnt);
 
 
         return modeCnt;

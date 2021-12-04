@@ -20,28 +20,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="WebViewPage"/>
 
+        <activity android:name=".WebViewPage" />
         <service
-            android:name=".bltScanService"
-
+            android:name=".MybltScanService"
             android:enabled="true"
-            android:foregroundServiceType="location"
-            android:exported="true"></service>
+            android:exported="true"
+            android:foregroundServiceType="location"></service>
+
 
         <service
-            android:name=".MyService"
+            android:name=".MylocationStorageService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="location" />
         <service android:name=".AdvertiserService" />
     </application>
-    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
 </manifest>

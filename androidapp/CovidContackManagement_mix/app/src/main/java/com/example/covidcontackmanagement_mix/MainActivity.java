@@ -5,7 +5,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
@@ -23,16 +22,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
-import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -83,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //블루투스 시작
+        //블루투스 광고시작
         Context context = MainActivity.this;
 
         if (savedInstanceState == null) {
@@ -128,16 +123,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        //블루투스끝
+        //블루투스 광고 끝
 
-        //블루투스 포그라운드시작
 
-        Intent serviceIntent1 = new Intent(this, bltScanService.class);
-        //startService(serviceIntent1);
 
-        //gps 포그라운드시작
+        //블루투스 스캐너 포그라운드시작
 
-        Intent serviceIntent = new Intent(this, MyService.class);
+
+        Intent serviceIntent1 = new Intent(this, MybltScanService.class);
+        startService(serviceIntent1);
+
+        //위치저장 포그라운드시작
+
+        Intent serviceIntent = new Intent(this, MylocationStorageService.class);
         startService(serviceIntent);
 
         //포그라운드 끝
@@ -687,12 +685,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupFragments() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
+        /*
         ScannerFragment scannerFragment = new ScannerFragment();
         // Fragments can't access system services directly, so pass it the BluetoothAdapter
         scannerFragment.setBluetoothAdapter(mBluetoothAdapter);
         transaction.replace(R.id.scanner_fragment_container, scannerFragment);
-
+        */
         AdvertiserFragment advertiserFragment = new AdvertiserFragment();
         transaction.replace(R.id.advertiser_fragment_container, advertiserFragment);
 
