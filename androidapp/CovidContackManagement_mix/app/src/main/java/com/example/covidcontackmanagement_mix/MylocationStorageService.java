@@ -135,7 +135,7 @@ public class MylocationStorageService extends Service {
         double altitude = location.getAltitude();
 
 
-        System.out.println(longitude);
+        //System.out.println(longitude);
 
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 1000,
@@ -442,10 +442,10 @@ public class MylocationStorageService extends Service {
             }
         }
 
-        //System.out.println("최빈수 : " + modeNum + "    cnt : " + modeCnt);
+        System.out.println("최빈수 : " + modeNum + "    cnt : " + modeCnt + "arr.leng : " + arr.length);
 
 
-        return modeCnt/arr.length;
+        return (float)modeCnt/arr.length;
     }
     //소수의 중앙값 리턴
     private static double getMedian(double[] arrayDouble) {
