@@ -42,7 +42,7 @@ public class MylocationStorageService extends Service {
     private Button button1;
     private TextView txtResult;
     private TextView txtResult2;
-    private int gps_num =10 ;
+    private int gps_num =300 ;
     private double[] longtitudeSet = new double[gps_num];
     private double[] latitudeSet = new double[gps_num];
     private double latitudeMedian;
