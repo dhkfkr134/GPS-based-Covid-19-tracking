@@ -36,6 +36,7 @@ public class MybltScanService extends Service {
     private String userID = "01";
     private String beforeLocation = "";
     private String intime;
+    private String staytime;
     private long now;
     private Date date;
     private SimpleDateFormat sdf;
@@ -174,9 +175,9 @@ public class MybltScanService extends Service {
                     cal.add(Calendar.HOUR, +2);
 
                     sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    intime = sdf.format(cal.getTime());
+                    intime = sdf.format(date);
 
-
+                    
                     //서버로데이터보내기
                     System.out.println("dataset: " +userID +" pre: " +presentLocation +"intime: "+ intime);
 
@@ -188,7 +189,7 @@ public class MybltScanService extends Service {
                         }
                     }.start();
 
-
+                    staytime = sdf.format(cal.getTime());
                     //이전장소로저장
                     beforeLocation = presentLocation;
 
@@ -198,7 +199,7 @@ public class MybltScanService extends Service {
 
                 sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String nowtime = sdf.format(date);
-                if(nowtime.compareTo(intime) > 0 ){
+                if(nowtime.compareTo(staytime) > 0 ){
                     beforeLocation = "";
                 }
             }
