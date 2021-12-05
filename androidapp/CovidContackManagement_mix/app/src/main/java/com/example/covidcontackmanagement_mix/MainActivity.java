@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         imageButton = (ImageButton) findViewById(R.id.imageButton);
         hostButton = (Button) findViewById(R.id.hostButton);
         userButton = (Button) findViewById(R.id.userButton);
-//        textView = (TextView) findViewById(R.id.textView);
+        textView = (TextView) findViewById(R.id.titleTextView);
         editTextView = (EditText) findViewById(R.id.editTextView);
         locationButton = (Button) findViewById(R.id.locationButton);
 
@@ -568,10 +568,11 @@ public class MainActivity extends AppCompatActivity {
             bluetoothSwitch.setVisibility(View.GONE);
             hostButton.setVisibility(View.GONE);
             userButton.setVisibility(View.GONE);
-//            textView.setVisibility(View.VISIBLE);
+            textView.setText("Host");
             editTextView.setVisibility(View.VISIBLE);
             locationButton.setVisibility(View.VISIBLE);
             editTextView.setText(hostLocation);
+
         }
         else if(hostOrUser==1){
             System.out.println("case100 : "+hostOrUser);
@@ -581,6 +582,7 @@ public class MainActivity extends AppCompatActivity {
             bluetoothSwitch.setVisibility(View.VISIBLE);
             hostButton.setVisibility(View.GONE);
             userButton.setVisibility(View.GONE);
+            textView.setText("User");
         }
         //블루투스 광고시작
         Context context = MainActivity.this;
@@ -914,7 +916,7 @@ public class MainActivity extends AppCompatActivity {
                     bluetoothSwitch.setVisibility(View.GONE);
                     hostButton.setVisibility(View.GONE);
                     userButton.setVisibility(View.GONE);
-//                    textView.setVisibility(View.VISIBLE);
+                    textView.setText("Host");
                     editTextView.setVisibility(View.VISIBLE);
                     locationButton.setVisibility(View.VISIBLE);
                 }
@@ -926,6 +928,7 @@ public class MainActivity extends AppCompatActivity {
                     bluetoothSwitch.setVisibility(View.VISIBLE);
                     hostButton.setVisibility(View.GONE);
                     userButton.setVisibility(View.GONE);
+                    textView.setText("User");
                 }
                 break;
             case 200:
