@@ -175,7 +175,7 @@ public class MybltScanService extends Service {
                     sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     intime = sdf.format(date);
 
-
+                    
                     //서버로데이터보내기
                     System.out.println("dataset: " +userID +" pre: " +presentLocation +"intime: "+ intime);
 
