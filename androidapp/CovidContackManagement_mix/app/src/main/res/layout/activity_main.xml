@@ -8,34 +8,62 @@
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/titleTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:visibility="gone"
-            android:text="업소의 주소를 입력해주세요" />
+            android:textAlignment="center"
+            android:layout_marginTop="20dp"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="#454545"
+            android:text="GPS Covid-19 Tracking" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="524px"
+            android:layout_height="494px"
+            android:scaleType="fitXY"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            app:srcCompat="@drawable/covid" />
+
+<!--        <TextView-->
+<!--            android:id="@+id/textView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textSize="20sp"-->
+<!--            android:visibility="gone"-->
+<!--            android:text="업소의 주소를 입력해주세요" />-->
 
         <EditText
             android:id="@+id/editTextView"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:textSize="15sp"
             android:inputType="textPersonName"
             android:visibility="gone"
-            android:text="구주소 입력" />
+            android:hint="구주소 입력" />
 
         <Button
             android:id="@+id/locationButton"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:text="Button" />
+            android:text="확인" />
 
     </LinearLayout>
 
@@ -66,35 +94,17 @@
 
 
     </LinearLayout>
-
+    <FrameLayout
+        android:id="@+id/advertiser_fragment_container"
+        android:layout_weight="0.2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.3"
+        android:layout_weight="0.2"
         android:orientation="vertical">
-
-
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="800px"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="로그아웃"
-            android:visibility="gone" />
-
-        <ImageButton
-            android:id="@+id/imageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginVertical="40dp"
-            android:layout_marginTop="10px"
-            android:background="@android:color/transparent"
-            android:visibility="gone"
-            app:srcCompat="@drawable/kakao_login_large_narrow" />
-
-
         <Switch
             android:id="@+id/storageLocationSwitch"
             android:layout_width="wrap_content"
@@ -103,11 +113,13 @@
             android:switchPadding="20dp"
             android:text="위치 저장         "
             android:visibility="gone"
+            android:layout_gravity="center"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Switch
+            android:layout_margin="23dp"
             android:id="@+id/bluetoothSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -115,16 +127,44 @@
             android:switchPadding="20dp"
             android:text="블루투스 자동 체크인"
             android:visibility="gone"
+            android:layout_gravity="center"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/storageLocationSwitch" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.3"
+        android:orientation="vertical">
 
-
-        <FrameLayout
-            android:id="@+id/advertiser_fragment_container"
+        <Button
+          android:id="@+id/button2"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="로그아웃"
+            android:visibility="gone"
             />
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginVertical="40dp"
+            android:layout_marginTop="10px"
+            android:background="@android:color/transparent"
+            android:visibility="gone"
+            app:srcCompat="@drawable/kakao_login_large_narrow" />
+
+
+
+
+
+
     </LinearLayout>
 
 </LinearLayout>

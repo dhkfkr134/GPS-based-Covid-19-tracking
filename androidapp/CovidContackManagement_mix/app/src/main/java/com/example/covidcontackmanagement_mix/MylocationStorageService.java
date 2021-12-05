@@ -68,10 +68,13 @@ public class MylocationStorageService extends Service {
     private void confirmAt(){
         try{
             String url="http://115.21.52.248:8080/kakao/access?access_token="+access_token;
+            System.out.println("before get mapping : "+ access_token);
             Request.Builder builder=new Request.Builder().url(url).get();
             Request request= builder.build();
             Response response= client.newCall(request).execute();
-            if(!response.body().equals("200")){
+            String resString=response.body().string();
+            System.out.println("res body : "+resString);
+            if(resString.equals("200")){
                 ResponseBody body=response.body();
                 if(body!=null){
                     System.out.println(body.string());
@@ -83,7 +86,8 @@ public class MylocationStorageService extends Service {
                 builder=new Request.Builder().url(url).get();
                 request=builder.build();
                 response=client.newCall(request).execute();
-                if(response.body().equals("200")){
+                resString=response.body().string();
+                if(resString.equals("200")){
                     ResponseBody body=response.body();
                     String ar_token=body.string();
                     String ar[];
@@ -110,8 +114,14 @@ public class MylocationStorageService extends Service {
 
         System.out.println("before:" + userID);
         userID = intent.getStringExtra("userID");
+        access_token=intent.getStringExtra("access_token");
+        refresh_token=intent.getStringExtra("refresh_token");
+        int destroyFlag = intent.getIntExtra("error",0);
+        if(destroyFlag==-1) {
+            onDestroy();
+        }
         System.out.println("fix:" + userID);
-
+        System.out.println(intent.getStringExtra("access_token"));
         //bluetooth foreground start
         // Initializes Bluetooth adapter.
 

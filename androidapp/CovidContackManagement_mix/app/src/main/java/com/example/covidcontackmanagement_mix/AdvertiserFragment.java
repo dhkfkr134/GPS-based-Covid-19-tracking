@@ -115,7 +115,6 @@ public class AdvertiserFragment extends Fragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
-
         if (com.example.covidcontackmanagement_mix.AdvertiserService.running) {
             mSwitch.setChecked(true);
         } else {
@@ -174,20 +173,16 @@ public class AdvertiserFragment extends Fragment implements View.OnClickListener
     /**
      * Stops BLE Advertising by stopping {@code AdvertiserService}.
      */
-    private void stopAdvertising() {
+    public void stopAdvertising() {
         Context c = getActivity();
         c.stopService(getServiceIntent(c));
         mSwitch.setChecked(false);
+        //mSwitch.setVisibility(View.GONE);
     }
     public void logoutAdvertising(){
         Context c = getActivity();
         c.stopService(getServiceIntent(c));
         mSwitch.setChecked(false);
-    }
-    public void restoreChecked(boolean checked){
-        Context c = getActivity();
-        c.stopService(getServiceIntent(c));
-        mSwitch.setChecked(checked);
     }
 
     public void inputUserID(String userID){

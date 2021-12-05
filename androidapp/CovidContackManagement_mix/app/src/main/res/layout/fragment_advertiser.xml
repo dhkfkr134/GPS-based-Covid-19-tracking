@@ -35,10 +35,11 @@
         android:paddingBottom="20dp" >
 
         <TextView
-            android:text="@string/broadcast_device"
+            android:text="블루투스 on/off"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:minWidth="100dp"
+            android:layout_marginRight="10dp"
             android:padding="5dp"/>
 
         <Switch

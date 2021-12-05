@@ -67,6 +67,8 @@ public class MybltScanService extends Service {
         System.out.println("startservice");
 
         userID = intent.getStringExtra("userID");
+        int destroyFlag = intent.getIntExtra("error",0);
+        if(destroyFlag==-1) onDestroy();
 
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
