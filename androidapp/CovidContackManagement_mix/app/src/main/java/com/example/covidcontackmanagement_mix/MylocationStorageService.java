@@ -183,7 +183,7 @@ public class MylocationStorageService extends Service {
 
 
                     //stay move파악하기
-                    System.out.println(provider  + "   " + latitude + "   " + longitude);
+                    System.out.println( sequence + provider  + "   " + latitude + "   " + longitude);
 
                     longtitudeSet[sequence] = longitude;
                     latitudeSet[sequence] = latitude;
