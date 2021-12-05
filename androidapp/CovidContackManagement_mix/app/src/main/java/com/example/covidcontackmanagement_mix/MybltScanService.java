@@ -172,7 +172,7 @@ public class MybltScanService extends Service {
                     cal.add(Calendar.HOUR, +2);
 
                     sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    intime = sdf.format(cal.getTime());
+                    intime = sdf.format(date);
 
 
                     //서버로데이터보내기
@@ -186,7 +186,7 @@ public class MybltScanService extends Service {
                         }
                     }.start();
 
-
+                    intime = sdf.format(cal.getTime());
                     //이전장소로저장
                     beforeLocation = presentLocation;
 
