@@ -83,8 +83,6 @@ public class UserLocationController {
 			mapper.putUserIdLocation(bvo.getId(), "","", it, ot,mapper.gethostIdLocation(bvo.getHostID()));
 		}catch(Exception e) {
 			System.out.println(e);
-		}
-		
-	}
-	
+		}	
+	}	
 }

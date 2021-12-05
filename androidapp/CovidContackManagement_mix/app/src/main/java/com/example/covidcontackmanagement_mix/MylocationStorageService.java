@@ -42,7 +42,7 @@ public class MylocationStorageService extends Service {
     private Button button1;
     private TextView txtResult;
     private TextView txtResult2;
-    private int gps_num =10 ;
+    private int gps_num =300 ;
     private double[] longtitudeSet = new double[gps_num];
     private double[] latitudeSet = new double[gps_num];
     private double latitudeMedian;
@@ -169,7 +169,7 @@ public class MylocationStorageService extends Service {
         double altitude = location.getAltitude();
 
 
-        System.out.println(longitude);
+        //System.out.println(longitude);
 
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 1000,
@@ -217,7 +217,7 @@ public class MylocationStorageService extends Service {
 
 
                     //stay move파악하기
-                    System.out.println(provider  + "   " + latitude + "   " + longitude);
+                    System.out.println( sequence + provider  + "   " + latitude + "   " + longitude);
 
                     longtitudeSet[sequence] = longitude;
                     latitudeSet[sequence] = latitude;
@@ -476,10 +476,10 @@ public class MylocationStorageService extends Service {
             }
         }
 
-        //System.out.println("최빈수 : " + modeNum + "    cnt : " + modeCnt);
+        System.out.println("최빈수 : " + modeNum + "    cnt : " + modeCnt + "arr.leng : " + arr.length);
 
 
-        return modeCnt/arr.length;
+        return (float)modeCnt/arr.length;
     }
     //소수의 중앙값 리턴
     private static double getMedian(double[] arrayDouble) {
