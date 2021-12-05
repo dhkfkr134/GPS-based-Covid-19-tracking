@@ -43,13 +43,14 @@ import okhttp3.ResponseBody;
 public class MainActivity extends AppCompatActivity {
 
     //
+    private Button locationButton;
     private Button button2;
     private Button hostButton, userButton;
     private ImageButton imageButton;
     private Switch storageLocationSwitch;
     private Switch bluetoothSwitch;
-//    private TextView textView;
-//    private EditText editTextView;
+    private TextView textView;
+    private EditText editTextView;
     private String test2;
     private String access_token=null;
     private String refresh_token=null;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean globalLocationChecked=false;
     private boolean globalBluetoothChecked=false;
     private boolean globalAdvertiserChecked=false;
+    private String hostLocation="구주소를 입력해주세요";
     //
     private int gps_num = 300;
     private double[] longtitudeSet = new double[gps_num];
@@ -87,8 +89,9 @@ public class MainActivity extends AppCompatActivity {
         imageButton = (ImageButton) findViewById(R.id.imageButton);
         hostButton = (Button) findViewById(R.id.hostButton);
         userButton = (Button) findViewById(R.id.userButton);
-//       // textView = (TextView) findViewById(R.id.textView);
-//       // editTextView = (EditText) findViewById(R.id.editTextView);
+        textView = (TextView) findViewById(R.id.textView);
+        editTextView = (EditText) findViewById(R.id.editTextView);
+        locationButton = (Button) findViewById(R.id.locationButton);
 
         Requests request = new Requests("http://115.21.52.248:8080/location/GPS");
 
@@ -123,6 +126,11 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("test10 : ");
         OkHttpClient client = new OkHttpClient();
         try{
+            if(hostOrUser==0){
+                String url="http://115.21.52.248:8080/host/access?access_token="+access_token;
+            }else if(hostOrUser==1){
+                String url="http://115.21.52.248:8080/kakao/access?access_token="+access_token;
+            }
             String url="http://115.21.52.248:8080/kakao/access?access_token="+access_token;
             Request.Builder builder=new Request.Builder().url(url).get();
             Request request= builder.build();
@@ -138,10 +146,17 @@ public class MainActivity extends AppCompatActivity {
                 return "";
             }
             else{
+                if(hostOrUser==0){
+                    url="http://115.21.52.248:8080/host/refresh?refresh_token="+refresh_token;
+                }else if(hostOrUser==1){
+                    url="http://115.21.52.248:8080/kakao/refresh?refresh_token="+refresh_token;
+                }
                 url="http://115.21.52.248:8080/kakao/refresh?refresh_token="+refresh_token;
                 builder=new Request.Builder().url(url).get();
                 request=builder.build();
                 response=client.newCall(request).execute();
+                if(response.body().string().equals("200"))
+                    System.out.println("response Success");
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -546,6 +561,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if(access_token!=null&&hostOrUser==0)
             advertiserFragment.inputUserID(userID);
+        //껏다켯을때 화면
         if(hostOrUser==0) {
             System.out.println("case100 : "+hostOrUser);
             imageButton.setVisibility(View.GONE);
@@ -554,6 +570,10 @@ public class MainActivity extends AppCompatActivity {
             bluetoothSwitch.setVisibility(View.GONE);
             hostButton.setVisibility(View.GONE);
             userButton.setVisibility(View.GONE);
+            textView.setVisibility(View.VISIBLE);
+            editTextView.setVisibility(View.VISIBLE);
+            locationButton.setVisibility(View.VISIBLE);
+            editTextView.setText(hostLocation);
         }
         else if(hostOrUser==1){
             System.out.println("case100 : "+hostOrUser);
@@ -637,6 +657,38 @@ public class MainActivity extends AppCompatActivity {
             bluetoothSwitch.setChecked(true);
         }
         //onclick 버튼들
+        locationButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                hostLocation = editTextView.getText().toString();
+                confirmAT();
+                try {
+                    Thread th = new Thread() {
+                        @Override
+                        public void run() {
+                            super.run();
+                            try {
+                                OkHttpClient client = new OkHttpClient();
+                                String url = "http://115.21.52.248:8080/host/update?hostID=" + userID + "&&loc=" + hostLocation;
+                                Request.Builder builder = new Request.Builder().url(url).get();
+                                Request request = builder.build();
+                                Response response = client.newCall(request).execute();
+                                if (response.body().string().equals("200")) {
+                                    System.out.println("loc trans success");
+                                }
+                                System.out.println("locationButton : " + hostLocation);
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+                    th.start();
+                    th.join();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
 
         hostButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -646,8 +698,7 @@ public class MainActivity extends AppCompatActivity {
                     userButton.setEnabled(false);
                     imageButton.setEnabled(true);
                     imageButton.setVisibility(View.VISIBLE);
-//                    textView.setVisibility(View.VISIBLE);
-//                    editTextView.setVisibility(View.VISIBLE);
+
                 }
                 else if(hostOrUser==0){
                     hostOrUser=-1;
@@ -675,29 +726,46 @@ public class MainActivity extends AppCompatActivity {
 
 
             if (access_token == null) {
-                new Thread() {
-                    public void run() {
-                        test2 = new Requests("http://115.21.52.248:8080/kakao/connect").getLoginUrl();
-                    }
-                }.start();
+//                new Thread() {
+//                    public void run() {
+//                        if(hostOrUser==0)
+//                            test2 = new Requests("http://115.21.52.248:8080/host/connect").getLoginUrl();
+//                        else if(hostOrUser==1)
+//                            test2 = new Requests("http://115.21.52.248:8080/kakao/connect").getLoginUrl();
+//                    }
+//                }.start();
                 //버튼 클릭리스너
                 System.out.println("onResume login : ");
                 imageButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         System.out.println("onResume login : " + access_token);
+                        System.out.println("onResume hostOrUser : " + hostOrUser);
                         if(hostOrUser==0) {
                             //advertiserFragment = new AdvertiserFragment();
                             setupFragments();
                         }
-                        new Thread() {
-                            public void run() {
-                                test2 = new Requests("http://115.21.52.248:8080/kakao/connect").getLoginUrl();
-                            }
-                        }.start();
+                        try {
+                            Thread th = new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (hostOrUser == 0)
+                                        test2 = new Requests("http://115.21.52.248:8080/host/connect").getLoginUrl();
+                                    else if (hostOrUser == 1)
+                                        test2 = new Requests("http://115.21.52.248:8080/kakao/connect").getLoginUrl();
+                                }
+                            });
+                            th.start();
+                            th.join();
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+
 
                         Intent intent = new Intent(getApplicationContext(), WebViewPage.class);
                         intent.putExtra("my_data", test2);
+                        intent.putExtra("hostOrUser",hostOrUser);
+                        System.out.println("test2 : "+test2);
 
 
                         startActivityForResult(intent, 100);
@@ -707,26 +775,38 @@ public class MainActivity extends AppCompatActivity {
                 });
 
             } else {
-                new Thread() {
-                    public void run() {
-                        test2 = new Requests("http://115.21.52.248:8080/kakao/logout?id=").kakaoLogout(userID, access_token);
-                    }
-                }.start();
+//                new Thread() {
+//                    public void run() {
+//                        if(hostOrUser==0)
+//                        test2 = new Requests("http://115.21.52.248:8080/host/logout?id=").kakaoLogout(userID, access_token);
+//                        else if(hostOrUser==1)
+//                            test2 = new Requests("http://115.21.52.248:8080/kakao/logout?id=").kakaoLogout(userID, access_token);
+//                    }
+//                }.start();
                 button2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //access_token 해제하는 코드
-                        new Thread() {
-                            public void run() {
-                                confirmAT();
-                                test2 = new Requests("http://115.21.52.248:8080/kakao/logout?id=").kakaoLogout(userID, access_token);
-                                access_token = null;
-                            }
-                        }.start();
+                       try {
+                           Thread th = new Thread() {
+                               public void run() {
+                                   confirmAT();
+                                   if (hostOrUser == 0)
+                                       test2 = new Requests("http://115.21.52.248:8080/host/logout?id=").kakaoLogout(userID, access_token);
+                                   else if (hostOrUser == 1)
+                                       test2 = new Requests("http://115.21.52.248:8080/kakao/logout?id=").kakaoLogout(userID, access_token);
+                                   access_token = null;
+                               }
+                           };
+                           th.start();
+                           th.join();
+                       }catch(Exception e){
+                           e.printStackTrace();
+                       }
 
                         Intent intent = new Intent(getApplicationContext(), WebViewPage.class);
                         intent.putExtra("my_data", test2);
-
+                        intent.putExtra("hostOrUser",hostOrUser);
                         System.out.println("onResume 로그아웃버튼 클릭 : " + test2);
 
                         startActivityForResult(intent, 200);
@@ -746,6 +826,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if(isChecked == true){
                     locationStorageService.putExtra("userID2", userID);
+                    locationStorageService.putExtra("access_token",access_token);
+                    locationStorageService.putExtra("refresh_token",refresh_token);
                     startService(locationStorageService);
                     globalLocationChecked = isChecked;
                 }
@@ -823,6 +905,9 @@ public class MainActivity extends AppCompatActivity {
                     bluetoothSwitch.setVisibility(View.GONE);
                     hostButton.setVisibility(View.GONE);
                     userButton.setVisibility(View.GONE);
+                    textView.setVisibility(View.VISIBLE);
+                    editTextView.setVisibility(View.VISIBLE);
+                    locationButton.setVisibility(View.VISIBLE);
                 }
                 else if(hostOrUser==1){
                     System.out.println("case100 : "+hostOrUser);
@@ -848,6 +933,9 @@ public class MainActivity extends AppCompatActivity {
                 hostButton.setEnabled(true);
                 userButton.setEnabled(true);
                 imageButton.setVisibility(View.GONE);
+                textView.setVisibility(View.GONE);
+                editTextView.setVisibility(View.GONE);
+                locationButton.setVisibility(View.GONE);
 
                 clearPrefs();
                 storageLocationSwitch.setChecked(false);
@@ -858,6 +946,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 hostOrUser=-1;
                 userID=null;
+                hostLocation="구주소를 입력해주세요";
 
 
                 break;
@@ -906,6 +995,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean("globalLocationChecked",globalLocationChecked);
         editor.putBoolean("globalBluetoothChecked",globalBluetoothChecked);
         editor.putBoolean("globalAdvertiserChecked",globalAdvertiserChecked);
+        editor.putString("hostLocation",hostLocation);
         editor.putInt("hostOrUser",hostOrUser);
         editor.commit();
     }
@@ -925,6 +1015,9 @@ public class MainActivity extends AppCompatActivity {
         }
         if((pref!=null)&&(pref.contains("globalAdvertiserChecked"))){
             globalAdvertiserChecked = pref.getBoolean("globalAdvertiserChecked",false);
+        }
+        if((pref!=null)&&(pref.contains("hostLocation"))){
+            hostLocation = pref.getString("hostLocation","");
         }
         if((pref!=null)&&(pref.contains("hostOrUser"))){
             hostOrUser = pref.getInt("hostOrUser",-1);

@@ -22,11 +22,12 @@ public class WebViewPage extends AppCompatActivity {
     private String refresh_token;
     private WebView webView;
     private String userID;
+    private String strHostOrKakao = null;
     private void getAccess_token(String code){
         try{
             OkHttpClient client=new OkHttpClient();
             Thread.sleep(1000);
-            String url = "http://115.21.52.248:8080/kakao/token?code="+code;
+            String url = "http://115.21.52.248:8080/"+strHostOrKakao+"/token?code="+code;
             System.out.println("webview1 "+code);
             Request.Builder builder=new Request.Builder().url(url).get();
             Request request= builder.build();
@@ -60,6 +61,14 @@ public class WebViewPage extends AppCompatActivity {
 
         Intent intent = getIntent();
         String myData = intent.getStringExtra("my_data");
+        int hostOrUser = intent.getIntExtra("hostOrUser",-1);
+
+        if(hostOrUser==0){
+            strHostOrKakao = "host";
+        }else if(hostOrUser==1){
+            strHostOrKakao = "kakao";
+        }
+        System.out.println("strHostOrKaKao : "+strHostOrKakao);
 
         webView=(WebView) findViewById(R.id.kakaoLogin);
         webView.setWebViewClient(new WebViewClient());
@@ -81,7 +90,7 @@ public class WebViewPage extends AppCompatActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d("webview3 check URL",url);
-            if(url.contains("http://115.21.52.248:8080/kakao/login?code")) {
+            if(url.contains("http://115.21.52.248:8080/"+strHostOrKakao+"/login?code")) {
                 String s[];
                 s = url.split("code=");
                 System.out.println("webview4 : " + s[1]);
@@ -96,7 +105,7 @@ public class WebViewPage extends AppCompatActivity {
                         finish();
                     }
                 }.start();
-            }else if(url.contains("http://115.21.52.248:8080/kakao/logout/check")){
+            }else if(url.contains("http://115.21.52.248:8080/"+strHostOrKakao+"/logout/check")){
                 Intent resultIntent = new Intent();
                 access_token=null;
                 refresh_token=null;

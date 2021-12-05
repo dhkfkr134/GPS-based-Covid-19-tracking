@@ -56,11 +56,45 @@ public class MylocationStorageService extends Service {
     private int sequence = 0;
     private boolean isMove = true;
     private OkHttpClient client = new OkHttpClient();
-
+    private String access_token;
+    private String refresh_token;
     private BluetoothAdapter mBluetoothAdapter;
     private Thread gpsThread;
 
     public MylocationStorageService() {
+    }
+
+
+    private void confirmAt(){
+        try{
+            String url="http://115.21.52.248:8080/kakao/access?access_token="+access_token;
+            Request.Builder builder=new Request.Builder().url(url).get();
+            Request request= builder.build();
+            Response response= client.newCall(request).execute();
+            if(!response.body().equals("200")){
+                ResponseBody body=response.body();
+                if(body!=null){
+                    System.out.println(body.string());
+                }else{
+                    System.out.println("정보없음!");
+                }
+            }else{
+                url="http://115.21.52.248:8080/kakao/refresh?refresh_token="+refresh_token;
+                builder=new Request.Builder().url(url).get();
+                request=builder.build();
+                response=client.newCall(request).execute();
+                if(response.body().equals("200")){
+                    ResponseBody body=response.body();
+                    String ar_token=body.string();
+                    String ar[];
+                    ar=ar_token.split(" / ");
+                    access_token=ar[0];
+                    refresh_token=ar[1];
+                }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -749,6 +783,7 @@ public class MylocationStorageService extends Service {
         public boolean postData(String userId, String mugunghwa,String gpsString ,String inTime, String outTime, String address){
             OkHttpClient client = new OkHttpClient();
             try{
+                confirmAt();
                 RequestBody formBody=new FormBody.Builder()
                         .add("id",userId)
                         .add("mcode",mugunghwa)

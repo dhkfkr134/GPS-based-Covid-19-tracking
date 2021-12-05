@@ -103,6 +103,22 @@ public class Requests {
         }
         return "false";
     }
+    public String sendHostLocation(String hostID){
+        try {
+            OkHttpClient client = new OkHttpClient();
+
+            Request.Builder builder = new Request.Builder().url(mURL).get();
+//            builder.addHeader()
+            Request request = builder.build();
+            Response response = client.newCall(request).execute();
+            ResponseBody body = response.body();
+
+            return body.string();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return "false";
+    }
 
 
 }
