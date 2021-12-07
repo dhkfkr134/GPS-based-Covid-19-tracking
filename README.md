@@ -10,15 +10,24 @@ GPS&블루투스 기반 Covid-19 확진자 동선 파악을 위한 서비스
 2) GPS-based-Covid-19-tracking/androidapp/CovidContackManagement_mix 프로젝트를 빌드하여 사용한다.
 
 2.사용 방법
+
+시작화면
+![image](https://user-images.githubusercontent.com/28720642/145001829-eb613ed5-5da0-4052-bc84-f261f93c2b50.png)
+ 어플리케이션 실행시 위치정보사용과 블루투스사용을 허용한다.
+
 사용자
+![image](https://user-images.githubusercontent.com/28720642/145001716-f6a76757-9842-492a-a5b8-219431c9d682.png)
+
 -위치저장
  : 자세한 위치정보를 제공하고 싶지 않을 때는 GPS끄고 사용하면 블루투스 인증방식만 사용할 수 있다.(본 어플리케이션은 포그라운드상에서 작동한다.)
 
 -블루투스 자동 체크인
-![KakaoTalk_20211206_170757272](https://user-images.githubusercontent.com/28720642/145001625-6da52124-bd1d-4456-8d22-59957a1f4b07.png)
+
 
  : 블루투스를 이용한 체크인 방법을 사용하고 싶으면 체크인기능을 활성화하고 알림음이 들리면 출입할 수 있다.
 블루투스 자동 체크인 기능을 활성화하고 본 서비스를 사용하는 사업장에서는 휴대폰을 꺼내지 않아도 알림음이 들리면 별도의 출입명부 작성없이 입장할 수 있다.
 
 사업자
+![image](https://user-images.githubusercontent.com/28720642/145001757-8a91b6c6-a1a7-4291-8d4d-351ad687160a.png)
+
 -사업자는 사업장의 위치를 적어서 확인버튼을 누르고, 블루투스 on토글을 켜면 사용자를 받을 수 있다. 어플리케이션을 실행한 단말기를 한명씩 들어갈 수 있는 입구에 두어서 어플리케이션 사용자인지 확인한다.
